@@ -4,12 +4,17 @@ import 'dart:io';
 
 import 'package:conduit_common/conduit_common.dart';
 import 'package:dcli/dcli.dart';
+import 'package:pub_release/pub_release.dart';
 
 /// Use this script to release all conduit packages
 ///
 /// You should have run
 void main(List<String> args) {
-  // final parser = ArgParser();
+  final parser = ArgParser();
+  parser.addFlag('dry-run',
+      abbr: 'd',
+      defaultsTo: false,
+      help: 'Runs the pub publish in dry run mode.');
   // parser.addFlag('test',
   //     defaultsTo: true,
   //     help: 'Runs all unit tests as part of the release process.');
@@ -22,6 +27,9 @@ void main(List<String> args) {
   //   print('Installing global package pub_release');
   //   DartSdk().globalActivate('pub_release');
   // }
+
+  final parsed = parser.parse(args);
+  final dryRun = parsed['dry-run'] as bool;
 
   print('');
   print('');
@@ -54,9 +62,21 @@ void main(List<String> args) {
     exit(1);
   }
 
+  final settings = MultiSettings.load();
+
+  final currentVersion = settings.getHighestVersion();
+  final newVersion = askForVersion(currentVersion);
+  settings.updateAllVersions(newVersion.toString());
+
   final pathToCiProjectRoot =
       join(conduitProject.pathToProjectRoot, '..', 'ci');
 
   runEx('pub_release',
-      args: 'multi --no-test', workingDirectory: pathToCiProjectRoot);
+      args: [
+        'multi',
+        '--no-test',
+        '--setVersion=${newVersion.toString()}',
+        if (dryRun) '--dry-run'
+      ].join(' '),
+      workingDirectory: pathToCiProjectRoot);
 }

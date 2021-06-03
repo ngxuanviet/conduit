@@ -6,10 +6,10 @@ environment:
 dependencies: 
   conduit_common: ^2.0.0-b6
   dcli: ^1.5.1
+  pub_release: ^7.1.4
   settings_yaml: ^3.0.0
 dev_dependencies: 
   lint: ^1.0.0
-  pub_release: ^7.0.0
 dependency_overrides: 
   conduit_common: 
     path: ../common
@@ -27,3 +27,5 @@ dependency_overrides:
     path: ../password_hash
   conduit_runtime: 
     path: ../runtime
+  pub_release:
+    path: ../../pub_release

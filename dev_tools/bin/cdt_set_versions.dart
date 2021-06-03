@@ -3,7 +3,7 @@
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
-import 'package:pub_semver/pub_semver.dart';
+import 'package:pub_release/pub_release.dart';
 
 /// Updates the version no.s of all top level packages.
 ///
@@ -23,64 +23,9 @@ void main(List<String> args) {
 
   final version = parsed['version'] as String;
 
-  final rootOfMonoRepo =
-      truepath(DartProject.fromPath('.').pathToProjectRoot, '..');
-  final projects = find('*',
-          types: [Find.directory],
-          recursive: false,
-          workingDirectory: rootOfMonoRepo)
-      .toList();
-
-  final knownProjects = <PubSpec>[];
-  for (final project in projects) {
-    final pubspecPath = join(project, 'pubspec.yaml');
-    if (exists(pubspecPath)) {
-      final pubspec = PubSpec.fromFile(pubspecPath);
-      pubspec.version = Version.parse(version);
-      pubspec.saveToFile(pubspecPath);
-      knownProjects.add(pubspec);
-    }
-  }
-
-  final hatVersion = '^$version';
-
-  // now update dependencies for the 'known' project
-  // which we have changed.
-  // We add a hat ^ to the start of the version no
-  // to make pub publish happy (it doesn't like overly constrained version numbers)
-  for (final project in projects) {
-    final pubspecPath = join(project, 'pubspec.yaml');
-    if (exists(pubspecPath)) {
-      final pubspec = PubSpec.fromFile(pubspecPath);
-
-      var replacementDependencies = <String, Dependency>{};
-
-      /// Update the version no. for any known dependency whos version
-      /// we have just changed.
-      for (var dependency in pubspec.dependencies.values) {
-        final known = findKnown(knownProjects, dependency);
-        if (known != null) {
-          replacementDependencies[dependency.name] =
-              (Dependency.fromHosted(dependency.name, hatVersion));
-        } else {
-          replacementDependencies[dependency.name] = dependency;
-        }
-      }
-      pubspec.dependencies = replacementDependencies;
-      pubspec.saveToFile(pubspecPath);
-      knownProjects.add(pubspec);
-    }
-  }
+  final settings = MultiSettings.load();
+  settings.updateAllVersions(version);
   print(orange('Done.'));
-}
-
-PubSpec? findKnown(List<PubSpec> knownProjects, Dependency dependency) {
-  for (var known in knownProjects) {
-    if (known.name == dependency.name) {
-      return known;
-    }
-  }
-  return null;
 }
 
 void showUseage(ArgParser parser) {
