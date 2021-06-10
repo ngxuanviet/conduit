@@ -24,7 +24,8 @@ dependencies:
   yaml: ^3.1.0
 dev_dependencies: 
   dcli: ^1.5.1
-  fs_test_agent: ^1.0.0-0
+  fs_test_agent:
+    path: ../fs_test_agent
   http: ^0.13.0
   matcher: '>=0.12.3 <0.14.0'
   mockito: ^5.0.0
@@ -50,7 +51,5 @@ dependency_overrides:
     path: ../password_hash
   conduit_runtime: 
     path: ../runtime
-  fs_test_agent: 
-    path: ../fs_test_agent
 executables: 
   conduit: conduit
