@@ -115,6 +115,7 @@ class Build {
   Future getDependencies() async {
     final cmd = Platform.isWindows ? "pub.bat" : "pub";
 
+    print(context.buildDirectoryUri);
     final res = await Process.run(cmd, ["get", "--offline", "--no-precompile"],
         workingDirectory:
             context.buildDirectoryUri.toFilePath(windows: Platform.isWindows),

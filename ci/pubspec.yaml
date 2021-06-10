@@ -41,5 +41,3 @@ dependency_overrides:
     path: ../password_hash
   conduit_runtime:
     path: ../runtime
-  fs_test_agent:
-    path: ../fs_test_agent

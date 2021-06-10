@@ -63,7 +63,6 @@ class ConduitCompiler extends Compiler {
               .resolve("../")
               .resolve("common_test/"),
           dst: context.buildPackagesDirectory.uri.resolve("common_test/"));
-      print(context.buildPackagesDirectory.uri.resolve("common_test/"));
       final targetPubspecFile =
           File.fromUri(context.buildDirectoryUri.resolve("pubspec.yaml"));
       final pubspecContents = json.decode(targetPubspecFile.readAsStringSync());
