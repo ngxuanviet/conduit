@@ -75,7 +75,7 @@ jobs:
 
   conduit_tool:
     env:
-      TEST_DIR: conduit
+      TEST_DIR: ci
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -97,4 +97,4 @@ jobs:
         run: dart pub get
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
-        run: dart tool/generated_test_runner.dart
+        run: dart generated_test_runner.dart
