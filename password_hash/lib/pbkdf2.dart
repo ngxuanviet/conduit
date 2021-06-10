@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:crypto/crypto.dart';
 import 'package:conduit_password_hash/salt.dart';
+import 'package:crypto/crypto.dart';
 
 /// Instances of this type derive a key from a password, salt, and hash function.
 ///

@@ -7,7 +7,7 @@ environment:
 dependencies: 
   test: ^1.16.5
   matcher: '>=0.12.3 <0.14.0'
-  conduit: ^2.0.0-b6
+  conduit: ^2.0.0-b9
 dev_dependencies: 
   conduit_common_test: 
     path: ../common_test

@@ -2,10 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:conduit/conduit.dart';
-import 'package:test/test.dart';
 import 'package:conduit_test/conduit_test.dart';
-
 import 'package:conduit_test/src/agent.dart';
+import 'package:test/test.dart';
 
 void main() {
   late MockHTTPServer server;

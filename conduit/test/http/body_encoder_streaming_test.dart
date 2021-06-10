@@ -3,10 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:conduit/conduit.dart';
+import 'package:conduit/src/dev/helpers.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
-import 'package:conduit/src/dev/helpers.dart';
+int port = 8886;
 
 void main() {
   var defaultSize = RequestBody.maxSize;
@@ -28,7 +29,7 @@ void main() {
         ..contentType = ContentType("application", "octet-stream");
       server = await bindAndRespondWith(response);
 
-      var resultFuture = http.get(Uri.parse("http://localhost:8888"));
+      var resultFuture = http.get(Uri.parse("http://localhost:${port}"));
 
       sc.add([1, 2, 3, 4]);
       sc.add([5, 6, 7, 8]);
@@ -46,7 +47,7 @@ void main() {
         ..contentType = ContentType("application", "octet-stream");
       server = await bindAndRespondWith(response);
 
-      final request = await HttpClient().get("localhost", 8888, "/");
+      final request = await HttpClient().get("localhost", port, "/");
       final resultFuture = request.close();
 
       sc.add([1, 2, 3, 4]);
@@ -77,7 +78,7 @@ void main() {
         ..contentType = ContentType("application", "silly");
       server = await bindAndRespondWith(response);
 
-      var resultFuture = http.get(Uri.parse("http://localhost:8888"));
+      var resultFuture = http.get(Uri.parse("http://localhost:${port}"));
 
       sc.add([1, 2, 3, 4]);
       sc.add([5, 6, 7, 8]);
@@ -107,7 +108,7 @@ void main() {
         ..contentType = ContentType("text", "plain", charset: "utf-8");
       server = await bindAndRespondWith(response);
 
-      var resultFuture = http.get(Uri.parse("http://localhost:8888"));
+      var resultFuture = http.get(Uri.parse("http://localhost:${port}"));
 
       sc.add("abcd");
       sc.add("efgh");
@@ -128,7 +129,7 @@ void main() {
         ..contentType = ContentType("application", "crash");
       server = await bindAndRespondWith(response);
 
-      final request = await HttpClient().get("localhost", 8888, "/");
+      final request = await HttpClient().get("localhost", port, "/");
       final resultFuture = request.close();
 
       sc.add("abcd");
@@ -169,7 +170,7 @@ void main() {
       server = await bindAndRespondWith(
           Response.ok(sc.stream)..contentType = ContentType.text);
 
-      var req = await client.getUrl(Uri.parse("http://localhost:8888"));
+      var req = await client.getUrl(Uri.parse("http://localhost:${port}"));
       req.headers.clear();
 
       var respFuture = req.close();
@@ -199,7 +200,7 @@ void main() {
       server = await bindAndRespondWith(
           Response.ok(sc.stream)..contentType = ContentType.text);
 
-      var req = await client.getUrl(Uri.parse("http://localhost:8888"));
+      var req = await client.getUrl(Uri.parse("http://localhost:${port}"));
       req.headers.clear();
       req.headers.add("accept-encoding", "deflate");
       var respFuture = req.close();
@@ -228,7 +229,7 @@ void main() {
       var ct = ContentType("application", "1");
       server =
           await bindAndRespondWith(Response.ok(sc.stream)..contentType = ct);
-      var req = await client.getUrl(Uri.parse("http://localhost:8888"));
+      var req = await client.getUrl(Uri.parse("http://localhost:${port}"));
       req.headers.clear();
       req.headers.add("accept-encoding", "gzip");
       var respFuture = req.close();
@@ -255,7 +256,7 @@ void main() {
           .add(ct, const Utf8Codec(), allowCompression: false);
       server =
           await bindAndRespondWith(Response.ok(sc.stream)..contentType = ct);
-      var req = await client.getUrl(Uri.parse("http://localhost:8888"));
+      var req = await client.getUrl(Uri.parse("http://localhost:${port}"));
       req.headers.clear();
       req.headers.add("accept-encoding", "gzip");
       var respFuture = req.close();
@@ -287,7 +288,7 @@ void main() {
       var response = Response.ok(sc.stream)
         ..contentType = ContentType("application", "octet-stream");
       var initiateResponseCompleter = Completer();
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, port);
       server.map((req) => Request(req)).listen((req) async {
         var next = PassthruController();
         next.linkFunction((req) async {
@@ -297,7 +298,7 @@ void main() {
         await next.receive(req);
       });
 
-      var socket = await Socket.connect("localhost", 8888);
+      var socket = await Socket.connect("localhost", port);
       var request =
           "GET /r HTTP/1.1\r\nConnection: keep-alive\r\nHost: localhost\r\n\r\n";
       socket.add(request.codeUnits);
@@ -393,7 +394,6 @@ void main() {
         "Entity with unknown content-type that is too large is rejected, chunked",
         () async {
       RequestBody.maxSize = 8193;
-
       var controller = PassthruController()
         ..linkFunction((req) async {
           var body = await req.body.decode();
@@ -416,7 +416,7 @@ void main() {
         } else {
           expect(response.statusCode, 413);
         }
-      } on SocketException catch (_) {
+      } on SocketException catch (e) {
         if (!Platform.isMacOS) {
           rethrow;
         }
@@ -452,7 +452,7 @@ Future serverHasNoMoreConnections(HttpServer server) async {
 }
 
 Future<HttpServer> bindAndRespondWith(Response response) async {
-  var server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
+  var server = await HttpServer.bind(InternetAddress.loopbackIPv4, port);
   server.map((req) => Request(req)).listen((req) async {
     var next = PassthruController();
     next.linkFunction((req) async {

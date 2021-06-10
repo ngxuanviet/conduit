@@ -1,7 +1,6 @@
 import 'dart:async';
-
-import 'package:test/test.dart';
 import 'package:conduit/conduit.dart';
+import 'package:test/test.dart';
 
 void main() {
   test("Can add resources to registry that get shut down", () async {

@@ -1,7 +1,7 @@
 import 'dart:mirrors';
 
-import 'package:conduit/src/db/managed/validation/metadata.dart';
 import 'package:conduit/src/db/managed/managed.dart';
+import 'package:conduit/src/db/managed/validation/metadata.dart';
 import 'package:conduit/src/utilities/mirror_helpers.dart';
 
 ManagedType getManagedTypeFromType(TypeMirror type) {

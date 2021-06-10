@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:http/http.dart' as http;
 import 'package:conduit/conduit.dart';
-import 'package:test/test.dart';
-
 import 'package:conduit/src/dev/helpers.dart';
+import 'package:http/http.dart' as http;
+import 'package:test/test.dart';
 
 // Some CachePolicy fields are tested by file_controller_test.dart, this
 // file tests the combinations not tested there.

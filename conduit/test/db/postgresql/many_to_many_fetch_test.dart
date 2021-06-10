@@ -1,10 +1,9 @@
 import 'dart:async';
 
 import 'package:conduit/conduit.dart';
+import 'package:conduit/src/dev/model_graph.dart';
 import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:test/test.dart';
-
-import 'package:conduit/src/dev/model_graph.dart';
 
 /*
   many to many should just be an extension of tests in belongs_to_fetch, tiered_where, has_many and has_one tests

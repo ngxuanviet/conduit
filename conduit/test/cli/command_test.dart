@@ -1,5 +1,3 @@
-// ignore: unused_import
-import 'package:args/args.dart' as a;
 import 'package:conduit/src/cli/command.dart';
 import 'package:conduit/src/cli/metadata.dart';
 import 'package:test/test.dart';

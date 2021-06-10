@@ -3,10 +3,10 @@
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
-import 'package:path/path.dart' as path_lib;
-import 'package:pub_semver/pub_semver.dart';
 import 'package:fs_test_agent/dart_project_agent.dart';
 import 'package:fs_test_agent/working_directory_agent.dart';
+import 'package:path/path.dart' as path_lib;
+import 'package:pub_semver/pub_semver.dart';
 import 'package:test/test.dart';
 import 'package:yaml/yaml.dart';
 

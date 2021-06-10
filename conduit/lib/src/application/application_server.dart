@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:conduit/src/application/channel.dart';
-import 'package:logging/logging.dart';
 import 'package:conduit_runtime/runtime.dart';
+import 'package:logging/logging.dart';
 
 import '../http/controller.dart';
 import '../http/request.dart';

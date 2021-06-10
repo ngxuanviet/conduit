@@ -1,6 +1,6 @@
 import 'package:conduit/src/http/route_node.dart';
-import "package:test/test.dart";
 import 'package:conduit/src/http/route_specification.dart';
+import "package:test/test.dart";
 
 void main() {
   group("Pattern splitting", () {

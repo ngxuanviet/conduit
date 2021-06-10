@@ -1,7 +1,6 @@
-import 'package:test/test.dart';
 import 'package:conduit/conduit.dart';
-
 import 'package:conduit/src/dev/helpers.dart';
+import 'package:test/test.dart';
 
 void main() {
   final ctx = ManagedContext(
@@ -374,6 +373,8 @@ void main() {
 
   test("Can combine both metadata and arguments to Column", () {
     final x = MultiValidate()..canOnlyBe4 = 3;
+    print('soidjfsoifj');
+    print(x.entity.attributes['canOnlyBe4']!.validators);
     expect(x.validate().isValid, false);
     x.canOnlyBe4 = 5;
     expect(x.validate().isValid, false);

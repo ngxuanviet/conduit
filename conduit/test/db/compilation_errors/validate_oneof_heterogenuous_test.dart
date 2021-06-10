@@ -1,5 +1,5 @@
-import 'package:test/test.dart';
 import 'package:conduit/conduit.dart';
+import 'package:test/test.dart';
 
 class FailingHeterogenous extends ManagedObject<_FH> {}
 

@@ -1,5 +1,6 @@
 library open_api_v3;
 
+export 'package:conduit_open_api/src/object.dart';
 export 'package:conduit_open_api/src/v3/callback.dart';
 export 'package:conduit_open_api/src/v3/components.dart';
 export 'package:conduit_open_api/src/v3/document.dart';
@@ -16,4 +17,3 @@ export 'package:conduit_open_api/src/v3/schema.dart';
 export 'package:conduit_open_api/src/v3/security.dart';
 export 'package:conduit_open_api/src/v3/server.dart';
 export 'package:conduit_open_api/src/v3/types.dart';
-export 'package:conduit_open_api/src/object.dart';

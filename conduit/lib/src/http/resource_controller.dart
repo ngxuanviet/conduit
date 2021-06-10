@@ -6,9 +6,9 @@ import 'package:conduit/src/auth/auth.dart';
 import 'package:conduit/src/http/resource_controller_interfaces.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
+import 'package:conduit_runtime/runtime.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:conduit_runtime/runtime.dart';
 
 import 'http.dart';
 

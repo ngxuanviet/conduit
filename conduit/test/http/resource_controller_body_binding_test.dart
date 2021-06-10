@@ -4,10 +4,9 @@ import "dart:core";
 import "dart:io";
 
 import 'package:conduit/conduit.dart';
+import 'package:conduit/src/dev/helpers.dart';
 import 'package:http/http.dart' as http;
 import "package:test/test.dart";
-
-import 'package:conduit/src/dev/helpers.dart';
 
 void main() {
   HttpServer? server;

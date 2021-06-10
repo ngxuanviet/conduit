@@ -7,7 +7,7 @@ environment:
 dependencies: 
   analyzer: ^1.2.0
   args: ^2.0.0
-  conduit_isolate_exec: ^2.0.0-b6
+  conduit_isolate_exec: ^2.0.0-b9
   dcli: ^1.5.1
   path: ^1.8.0
   pubspec: ^2.0.1

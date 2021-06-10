@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:conduit/src/application/service_registry.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
+import 'package:conduit_runtime/runtime.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:conduit_runtime/runtime.dart';
 
 import '../http/http.dart';
 import 'application.dart';

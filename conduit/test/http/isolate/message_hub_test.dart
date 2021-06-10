@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart' show IterableExtension;
-import 'package:http/http.dart' as http;
 import 'package:conduit/conduit.dart';
+import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
 void main() {

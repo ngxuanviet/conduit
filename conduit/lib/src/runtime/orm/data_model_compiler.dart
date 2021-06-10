@@ -1,7 +1,7 @@
 import 'dart:mirrors';
-import 'package:conduit/src/runtime/orm/entity_builder.dart';
 
 import 'package:conduit/src/db/managed/managed.dart';
+import 'package:conduit/src/runtime/orm/entity_builder.dart';
 import 'package:conduit_runtime/runtime.dart';
 
 class DataModelCompiler {

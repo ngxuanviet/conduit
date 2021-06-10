@@ -13,12 +13,14 @@
         {
             "name": "All Conduit Tests",
             "type": "dart",
-            "program": "conduit/test/",
             "request": "launch",
             "args": [
-                "-j1",
                 "test"
-            ]
+            ],
+            "env": {
+                "TEST_VALUE": 1,
+                "TEST_BOOL": true
+            }
         },
     ]
 }

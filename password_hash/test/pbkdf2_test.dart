@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:conduit_password_hash/conduit_password_hash.dart';
-import 'package:test/test.dart';
 import 'package:crypto/crypto.dart';
+import 'package:test/test.dart';
 
 List<int> encodeBytes(String bytes) {
   final byteList = bytes.split(" ");

@@ -1,9 +1,8 @@
+import 'package:conduit/conduit.dart';
 import 'package:conduit/src/db/postgresql/postgresql_query.dart';
 import 'package:conduit/src/db/postgresql/query_builder.dart';
 import 'package:conduit_common_test/conduit_common_test.dart';
-
 import 'package:test/test.dart';
-import 'package:conduit/conduit.dart';
 
 void main() {
   ManagedContext? context;

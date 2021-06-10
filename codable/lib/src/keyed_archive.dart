@@ -1,7 +1,8 @@
 import 'dart:collection';
+
+import 'package:conduit_codable/cast.dart' as cast;
 import 'package:conduit_codable/src/codable.dart';
 import 'package:conduit_codable/src/coding.dart';
-import 'package:conduit_codable/cast.dart' as cast;
 import 'package:conduit_codable/src/list.dart';
 import 'package:conduit_codable/src/resolver.dart';
 

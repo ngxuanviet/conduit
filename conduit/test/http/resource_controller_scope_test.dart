@@ -2,11 +2,10 @@ import 'dart:async';
 import "dart:core";
 
 import 'package:conduit/conduit.dart';
+import 'package:conduit/src/dev/helpers.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:conduit_test/conduit_test.dart';
 import 'package:test/test.dart';
-
-import 'package:conduit/src/dev/helpers.dart';
 
 void main() {
   final app = Application<Channel>();

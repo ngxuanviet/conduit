@@ -1,11 +1,10 @@
-import 'package:conduit/src/runtime/orm/entity_builder.dart';
-import 'package:conduit/src/runtime/orm/property_builder.dart';
 import 'package:conduit/src/db/managed/data_model.dart';
 import 'package:conduit/src/db/managed/entity.dart';
 import 'package:conduit/src/db/managed/relationship_type.dart';
 import 'package:conduit/src/db/managed/validation/managed.dart';
-
 import 'package:conduit/src/db/managed/validation/metadata.dart';
+import 'package:conduit/src/runtime/orm/entity_builder.dart';
+import 'package:conduit/src/runtime/orm/property_builder.dart';
 
 class ValidatorBuilder {
   ValidatorBuilder(this.property, this.metadata);
