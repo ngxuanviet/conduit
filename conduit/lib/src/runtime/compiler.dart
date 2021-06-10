@@ -63,11 +63,6 @@ class ConduitCompiler extends Compiler {
               .resolve("../")
               .resolve("common_test/"),
           dst: context.buildPackagesDirectory.uri.resolve("common_test/"));
-      copyDirectory(
-          src: context.sourceApplicationDirectory.uri
-              .resolve("../")
-              .resolve("fs_test_agent/"),
-          dst: context.buildPackagesDirectory.uri.resolve("fs_test_agent/"));
       final targetPubspecFile =
           File.fromUri(context.buildDirectoryUri.resolve("pubspec.yaml"));
       final pubspecContents = json.decode(targetPubspecFile.readAsStringSync());
@@ -75,8 +70,8 @@ class ConduitCompiler extends Compiler {
           "packages/test_harness";
       pubspecContents["dev_dependencies"]["conduit_common_test"]["path"] =
           "packages/common_test";
-      pubspecContents["dev_dependencies"]["fs_test_agent"]["path"] =
-          "packages/fs_test_agent";
+      pubspecContents["dependency_overrides"]["fs_test_agent"] =
+          pubspecContents["dependencies"]["fs_test_agent"];
       pubspecContents["dependency_overrides"]["conduit"] =
           pubspecContents["dependencies"]["conduit"];
       targetPubspecFile.writeAsStringSync(json.encode(pubspecContents));
