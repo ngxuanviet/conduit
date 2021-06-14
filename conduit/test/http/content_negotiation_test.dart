@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:conduit/conduit.dart';
+import 'package:conduit/src/http/request.dart';
 import 'package:test/test.dart';
 
 void main() {
