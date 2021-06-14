@@ -5,8 +5,8 @@ description: A collection of classes and function used for testing conduit and b
 environment: 
   sdk: '>=2.12.0 <3.0.0'
 dependencies: 
-  conduit: ^2.0.0-b6
-  conduit_common: ^2.0.0-b6
+  conduit: ^2.0.0-b9
+  conduit_common: ^2.0.0-b9
   dcli: ^1.5.1
   settings_yaml: ^3.0.3
 dependency_overrides: 

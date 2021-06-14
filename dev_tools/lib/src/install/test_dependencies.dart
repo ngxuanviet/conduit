@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:dcli/dcli.dart';
 
-
 /// Docker functions
 void installDocker() {
   if (whichEx('docker')) {

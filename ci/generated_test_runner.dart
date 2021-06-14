@@ -43,7 +43,7 @@ Future main(List<String> args) async {
     final makePrompt = () =>
         '(Pass: ${passingFiles.length} Fail: ${failingFiles.length} Remain: $remainingCounter)';
 
-    print('${makePrompt()} Running tests derived from ${f.path}...');
+    print('Running tests derived from ${f.path}...');
     final ctx = BuildContext(
         conduitDir.resolve('lib/').resolve('conduit.dart'),
         Directory.current.uri.resolve('../').resolve('_build/'),

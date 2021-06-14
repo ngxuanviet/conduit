@@ -179,8 +179,8 @@ class Preparer {
 
     print('Building symbol map...');
     var indexFile = File(join(sourceDir, 'doc', 'api', 'index.json'));
-    var indexJSON = json
-        .decode(await indexFile.readAsString()) as List<Map<String, dynamic>>;
+    var indexJSON = json.decode(await indexFile.readAsString())
+        as List<Map<String, dynamic>>;
     var libraries = indexJSON
         .where((m) => m['type'] == 'library')
         .map((lib) => lib['qualifiedName'])

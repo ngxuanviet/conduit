@@ -259,8 +259,7 @@ class Runner {
 
     if (!isDryRun!) {
       var response = await http.post(
-        Uri.parse(
-            "https://api.github.com/repos/stablekernel/conduit/releases"),
+        Uri.parse("https://api.github.com/repos/stablekernel/conduit/releases"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${configuration.githubToken}"

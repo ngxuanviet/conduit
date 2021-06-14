@@ -5,7 +5,7 @@ description: Data structures for OpenAPI (Swagger) specification. Reads and writ
 environment: 
   sdk: '>=2.12.0-0 <3.0.0'
 dependencies: 
-  conduit_codable: ^2.0.0-b6
+  conduit_codable: ^2.0.0-b9
   meta: ^1.1.5
 dev_dependencies: 
   dcli: ^1.5.1
