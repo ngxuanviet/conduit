@@ -1,0 +1,29 @@
+name: conduit_dev_tools
+version: 2.0.0-b8
+description: Tools to make developing/testing conduit easier.
+environment: 
+  sdk: '>=2.12.0 <3.0.0'
+dependencies: 
+  conduit_common: ^2.0.0-b9
+  dcli: ^1.5.1
+  pub_release: ^7.1.4
+  settings_yaml: ^3.0.0
+dev_dependencies: 
+  lint: ^1.0.0
+dependency_overrides: 
+  conduit_common: 
+    path: ../common
+  conduit: 
+    path: ../conduit
+  conduit_open_api: 
+    path: ../open_api
+  conduit_codable: 
+    path: ../codable
+  conduit_config: 
+    path: ../config
+  conduit_isolate_exec: 
+    path: ../isolate_exec
+  conduit_password_hash: 
+    path: ../password_hash
+  conduit_runtime: 
+    path: ../runtime

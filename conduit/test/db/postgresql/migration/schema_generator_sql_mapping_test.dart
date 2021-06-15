@@ -1,10 +1,10 @@
 import 'dart:mirrors';
 
 import 'package:conduit/conduit.dart';
+import 'package:conduit/src/db/managed/relationship_type.dart';
 import 'package:conduit/src/runtime/orm/entity_mirrors.dart';
 import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:test/test.dart';
-import 'package:conduit/src/db/managed/relationship_type.dart';
 
 // These tests verifying that the raw persistent store migration commands are mapped to one or more specific SQL statements
 void main() {

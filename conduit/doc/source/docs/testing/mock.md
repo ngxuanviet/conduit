@@ -1,6 +1,6 @@
 # Mocking External Services
 
-An Conduit application often communicates with another server. For example, an application might make requests to the GitHub API to collect analytics about a team's workflow. When running automated tests, consuming the actual GitHub API isn't feasible - because GitHub will probably rate limit you and because the data being returned is constantly changing.
+A Conduit application often communicates with another server. For example, an application might make requests to the GitHub API to collect analytics about a team's workflow. When running automated tests, consuming the actual GitHub API isn't feasible - because GitHub will probably rate limit you and because the data being returned is constantly changing.
 
 To solve this problem, you can create "mocks" of a service during testing. Conduit has two testing utilities for this purpose - `MockServer` and `MockHTTPServer` - in the `conduit/test` library.
 

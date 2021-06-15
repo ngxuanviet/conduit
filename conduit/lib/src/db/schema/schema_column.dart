@@ -277,7 +277,7 @@ class SchemaColumnDifference {
       if (actualColumn!.relatedColumnName !=
           expectedColumn!.relatedColumnName) {
         throw SchemaException(
-            "Cannot change Relationship inverse of '${expectedColumn!.table!.name}.${expectedColumn!.name}'");
+            "Cannot change an existing column '${expectedColumn!.table!.name}.${expectedColumn!.name}' to an inverse Relationship");
       }
 
       if (actualColumn!.relatedTableName != expectedColumn!.relatedTableName) {

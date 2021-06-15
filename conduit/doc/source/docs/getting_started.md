@@ -30,7 +30,7 @@ It is best to first understand how HTTP requests are responded to - the foundati
 
 ## Creating a Project
 
-The `conduit create` command-line tool creates new Conduit project directories. The default template contains the minimal project structure for running an Conduit application. A project name must be snake\_case.
+The `conduit create` command-line tool creates new Conduit project directories. The default template contains the minimal project structure for running a Conduit application. A project name must be snake\_case.
 
 ```text
 conduit create my_project_name

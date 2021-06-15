@@ -1,10 +1,10 @@
-# Deploying an Conduit Application on Remote VMs
+# Deploying a Conduit Application on Remote VMs
 
 For other deployment options, see [Deploying Conduit Applications]().
 
 ### Purpose
 
-This document will describe the steps to deploy an Conduit application to a remote machine that you are able to `ssh` into. This is often the case for Amazon Web Service \(AWS\) EC2 instances, Google Cloud Compute Instances, Azure Virtual Machines, and rented boxes on platforms like Digital Ocean or other cloud providers.
+This document will describe the steps to deploy a Conduit application to a remote machine that you are able to `ssh` into. This is often the case for Amazon Web Service \(AWS\) EC2 instances, Google Cloud Compute Instances, Azure Virtual Machines, and rented boxes on platforms like Digital Ocean or other cloud providers.
 
 If you are unfamiliar with deploying applications in this way, this is not a good beginner's guide and will not cover many of the steps necessary to deploy an application. Prefer to use a platform like Heroku or one that supports Docker. See the guides on [Heroku](deploy_heroku.md) and [Docker](deploy_docker.md) for better options.
 

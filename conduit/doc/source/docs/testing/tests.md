@@ -2,12 +2,12 @@
 
 From the ground up, Conduit is built to be tested. In practice, this means two things:
 
-* A deployed Conduit application has zero code differences from an Conduit application under test.
+* A deployed Conduit application has zero code differences from a Conduit application under test.
 * There are helpful utilities for writing tests in Conduit.
 
 ## How Tests are Written
 
-An Conduit test suite starts your application with a configuration file specifically built for a test instance of your application. You write test cases that verify the responses of requests sent to this application. Sometimes, you might reach into your application's services to validate that an intended side-effect was triggered. For example, you might ensure that after a request was executed, a row was added to a database table.
+A Conduit test suite starts your application with a configuration file specifically built for a test instance of your application. You write test cases that verify the responses of requests sent to this application. Sometimes, you might reach into your application's services to validate that an intended side-effect was triggered. For example, you might ensure that after a request was executed, a row was added to a database table.
 
 A `TestHarness<T>` is a type from `package:conduit_test` that handles the initialization of your application under test. It is often subclassed to add application-specific startup tasks, like seeding a database with test users or adding OAuth 2.0 clients. A test harness is installed at the beginning of your test's `main` function.
 

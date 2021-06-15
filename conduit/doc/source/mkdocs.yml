@@ -85,7 +85,7 @@ pages:
   - 'Generating an OpenAPI/Swagger Specification': 'cli/document.md'
 - 'Guide: Deployment':
   - 'Overview': 'deploy/index.md'
-  - 'Creating an Conduit Executable': 'deploy/build.md'
+  - 'Creating a Conduit Executable': 'deploy/build.md'
   - 'Deploy Locally (VM)': 'deploy/deploy_local.md'
   - 'Deploying with Docker and Kubernetes (VM)': 'deploy/deploy_docker.md'
   - 'Deploy on Heroku (VM)': 'deploy/deploy_heroku.md'

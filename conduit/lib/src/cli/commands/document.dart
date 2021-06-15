@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:conduit/src/cli/command.dart';
+import 'package:conduit/src/cli/commands/document_serve.dart';
 import 'package:conduit/src/cli/commands/oai_client.dart';
 import 'package:conduit/src/cli/mixins/openapi_options.dart';
 import 'package:conduit/src/cli/mixins/project.dart';
-
-import 'package:conduit/src/cli/command.dart';
-import 'package:conduit/src/cli/commands/document_serve.dart';
 import 'package:conduit/src/cli/scripts/openapi_builder.dart';
 
 class CLIDocument extends CLICommand with CLIProject, CLIDocumentOptions {
@@ -36,7 +35,7 @@ class CLIDocument extends CLICommand with CLIProject, CLIDocumentOptions {
 
   @override
   String get detailedDescription {
-    return "This tool will generate an OpenAPI specification of an Conduit application. It operates by invoking Application.document. "
+    return "This tool will generate an OpenAPI specification of a Conduit application. It operates by invoking Application.document. "
         "This method locates the ApplicationChannel subclass and invokes the first three phases of initialization:\n\n"
         "\tApplicationChannel.initializeApplication\n"
         "\tAppplicationChannel.prepare\n"

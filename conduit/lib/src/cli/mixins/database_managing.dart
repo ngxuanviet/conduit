@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:conduit/src/cli/command.dart';
 import 'package:conduit/src/cli/metadata.dart';
+import 'package:conduit/src/cli/migration_source.dart';
 import 'package:conduit/src/cli/mixins/project.dart';
 import 'package:conduit/src/cli/scripts/schema_builder.dart';
-import 'package:conduit/src/cli/migration_source.dart';
 import 'package:conduit/src/db/schema/schema.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 
@@ -15,7 +15,7 @@ abstract class CLIDatabaseManagingCommand implements CLICommand, CLIProject {
           "The directory where migration files are stored. Relative paths are relative to the application-directory.",
       defaultsTo: "migrations")
   Directory? get migrationDirectory {
-    final dir = Directory(decode("migration-directory")!).absolute;
+    final dir = Directory(decode("migration-directory")).absolute;
 
     if (!dir.existsSync()) {
       dir.createSync();

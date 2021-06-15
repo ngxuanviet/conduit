@@ -4,7 +4,7 @@ Learn how an application is initialized so it can serve requests.
 
 ## Overview
 
-Applications are started by running `conduit serve` or `dart bin/main.script` in an Conduit project directory. Either way, a number of threads are created and your `ApplicationChannel` subclass is instantiated on each thread. The channel subclass initializes application behavior which is often the following:
+Applications are started by running `conduit serve` or `dart bin/main.script` in a Conduit project directory. Either way, a number of threads are created and your `ApplicationChannel` subclass is instantiated on each thread. The channel subclass initializes application behavior which is often the following:
 
 * reads configuration data for environment specific setup
 * initializes service objects like [database connections]()
@@ -139,7 +139,7 @@ wildfire/
     ...
 ```
 
-See [this guide](structure.md) for more details on how an Conduit application's files are structured.
+See [this guide](structure.md) for more details on how a Conduit application's files are structured.
 
 ## Lazy Services
 
@@ -164,7 +164,7 @@ Future execute(String sql) async {
 
 Hidden in all of this discussion is the `Application<T>` object. Because the `conduit serve` command manages creating an `Application<T>` instance, your code rarely concerns itself with this type.
 
-An `Application<T>` is the top-level object in an Conduit application; it sets up HTTP listeners and directs requests to `ApplicationChannel`s. The `Application<T>` itself is just a generic container for `ApplicationChannel`s; it doesn't do much other than kick everything off.
+An `Application<T>` is the top-level object in a Conduit application; it sets up HTTP listeners and directs requests to `ApplicationChannel`s. The `Application<T>` itself is just a generic container for `ApplicationChannel`s; it doesn't do much other than kick everything off.
 
 The application's `start` method will initialize at least one instance of the application's `ApplicationChannel`. If something goes wrong during this initialization process, the application will throw an exception and halt starting the server. For example, setting up an invalid route in a `ApplicationChannel` subclass would trigger this type of startup exception.
 

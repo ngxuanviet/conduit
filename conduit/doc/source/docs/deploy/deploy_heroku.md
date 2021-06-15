@@ -1,4 +1,4 @@
-# Deploying an Conduit Application on Heroku
+# Deploying a Conduit Application on Heroku
 
 For other deployment options, see [Deploying Conduit Applications]().
 
@@ -17,7 +17,7 @@ To run a production Conduit application on Heroku. Make sure to also read [Testi
 ## Overview
 
 1. Setting up a Heroku application
-2. Setting up an Conduit application to run on Heroku
+2. Setting up a Conduit application to run on Heroku
 3. Configuring application values
 4. Running the Conduit application
 
@@ -29,7 +29,7 @@ Create a new application in Heroku's web portal, and if you are using a database
 
 Navigate to the Settings tab in the Heroku web interface and click 'Reveal Config Vars'. Note that there is a DATABASE\_URL environment variable that is the connection details for your PostgreSQL database. You won't need to remember the value, only that this environment variable exists.
 
-## Step 2: Setting up an Conduit Application to Run on Heroku
+## Step 2: Setting up a Conduit Application to Run on Heroku
 
 If you have not yet, create a new Conduit application on your local machine, go into that directory, and initialize it as a git repository if it is not already:
 

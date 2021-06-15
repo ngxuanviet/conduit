@@ -17,8 +17,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 library conduit;
 
 export 'package:conduit/src/runtime/compiler.dart';
-export 'package:logging/logging.dart';
 export 'package:conduit_config/conduit_config.dart';
+export 'package:logging/logging.dart';
 
 export 'src/application/application.dart';
 export 'src/auth/auth.dart';

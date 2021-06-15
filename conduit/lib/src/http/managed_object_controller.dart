@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:conduit_open_api/v3.dart';
 import 'package:conduit_common/conduit_common.dart';
+import 'package:conduit_open_api/v3.dart';
 
 import '../db/db.dart';
 import 'http.dart';
@@ -417,9 +417,8 @@ class ManagedObjectController<InstanceType extends ManagedObject>
     final entityName = _query!.entity!.name;
 
     if (path.parameters
-            ?.where((p) => p!.location == APIParameterLocation.path)
-            .isNotEmpty ??
-        false) {
+        .where((p) => p!.location == APIParameterLocation.path)
+        .isNotEmpty) {
       ops["get"]!.id = "get$entityName";
       ops["put"]!.id = "update$entityName";
       ops["delete"]!.id = "delete$entityName";

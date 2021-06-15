@@ -104,7 +104,7 @@ The interface `ManagedAuthResourceOwner<T>` is a requirement that ensures the ty
 
 This structure allows an application to declare its own 'user' type while still enforcing the needs of Conduit's OAuth 2.0 implementation.
 
-The `managed_auth` library also declares two `ManagedObject<T>` subclasses. `ManagedAuthToken` represents instances of authorization tokens and codes, and `ManagedAuthClient` represents instances of OAuth 2.0 clients. This means that an Conduit application that uses `ManagedAuthDelegate<T>` has a minimum of three database tables: users, tokens and clients.
+The `managed_auth` library also declares two `ManagedObject<T>` subclasses. `ManagedAuthToken` represents instances of authorization tokens and codes, and `ManagedAuthClient` represents instances of OAuth 2.0 clients. This means that a Conduit application that uses `ManagedAuthDelegate<T>` has a minimum of three database tables: users, tokens and clients.
 
 `ManagedAuthDelegate<T>` will delete authorization tokens and codes when they are no longer in use. This is determined by how many tokens a resource owner has and the tokens expiration dates. Once a resource owner acquires more than 40 tokens/codes, the oldest tokens/codes \(determined by expiration date\) are deleted. Effectively, the resource owner is limited to 40 tokens. This number can be changed when instantiating `ManagedAuthDelegate<T>`:
 

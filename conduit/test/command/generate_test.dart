@@ -13,7 +13,7 @@ void main() {
   setUpAll(() async {
     templateCli = await CLIClient(
       WorkingDirectoryAgent(DartProjectAgent.projectsDirectory),
-    ).createProject();
+    ).createTestProject();
     await templateCli.agent.getDependencies(offline: true);
   });
 

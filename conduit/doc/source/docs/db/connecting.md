@@ -1,6 +1,6 @@
 # Connecting to a Database from Conduit
 
-The purpose of this document is to guide you through creating a new PostgreSQL database and setting up an Conduit application that connects to it.
+The purpose of this document is to guide you through creating a new PostgreSQL database and setting up a Conduit application that connects to it.
 
 ## Creating a Database
 

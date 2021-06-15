@@ -1,16 +1,16 @@
-# Deploying an Conduit Application using Docker
+# Deploying a Conduit Application using Docker
 
 For other deployment options, see [Deploying Conduit Applications]().
 
 ## Purpose
 
-This document will describe the steps to deploy an Conduit application through Docker, Docker Compose or a container orchestration platform like Kubernetes. For Dockerfile and Kubernetes templates, see [this repository](https://github.com/conduit.dart/kubernetes).
+This document will describe the steps to deploy a Conduit application through Docker, Docker Compose or a container orchestration platform like Kubernetes. For Dockerfile and Kubernetes templates, see [this repository](https://github.com/conduit.dart/kubernetes).
 
 If you are unfamiliar with deploying applications in this way, this is not a good beginner's guide and will not cover the topics of Docker, Docker Compose or Kubernetes.
 
 ## Dockerfiles
 
-The following Dockerfile will run an Conduit application.
+The following Dockerfile will run a Conduit application.
 
 ```text
 FROM google/dart
@@ -67,7 +67,7 @@ Once the service is up \(using `docker-compose up -d`\), you can run your databa
 
 ## Kubernetes Objects
 
-For more Kubernetes objects - including tasks for database migrations and OAuth 2.0 client management - see [this repository](https://github.com/conduit.dart/kubernetes). The following is Kubernetes configuration file for starting an Conduit application and exposing it as a service. Replace `<APP_NAME>` with your application's name.
+For more Kubernetes objects - including tasks for database migrations and OAuth 2.0 client management - see [this repository](https://github.com/conduit.dart/kubernetes). The following is Kubernetes configuration file for starting a Conduit application and exposing it as a service. Replace `<APP_NAME>` with your application's name.
 
 ```text
 apiVersion: v1

@@ -1,0 +1,1 @@
+Generates a replica of a application package and it's dependencies that strips dart:mirror usage so that it may be compiled.

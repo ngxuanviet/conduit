@@ -1,4 +1,4 @@
-# Creating an Conduit Executable
+# Creating a Conduit Executable
 
 ### Beta Notes and Known Issues:
 

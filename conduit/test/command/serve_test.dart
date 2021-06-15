@@ -5,10 +5,10 @@ import 'dart:io';
 
 import 'package:fs_test_agent/dart_project_agent.dart';
 import 'package:fs_test_agent/working_directory_agent.dart';
-import 'package:test/test.dart';
 import 'package:http/http.dart' as http;
-import 'package:yaml/yaml.dart' as yaml;
 import 'package:pub_semver/pub_semver.dart';
+import 'package:test/test.dart';
+import 'package:yaml/yaml.dart' as yaml;
 
 import '../not_tests/cli_helpers.dart';
 
@@ -30,7 +30,7 @@ void main() {
   setUpAll(() async {
     templateCli = await CLIClient(
             WorkingDirectoryAgent(DartProjectAgent.projectsDirectory))
-        .createProject();
+        .createTestProject();
     await templateCli.agent.getDependencies(offline: true);
   });
 

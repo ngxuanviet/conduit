@@ -6,9 +6,9 @@ import 'package:conduit/src/db/persistent_store/persistent_store.dart';
 import 'package:conduit/src/db/postgresql/postgresql_persistent_store.dart';
 import 'package:conduit/src/db/query/error.dart';
 import 'package:conduit/src/db/schema/schema.dart';
+import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 import 'package:logging/logging.dart';
 import 'package:postgres/postgres.dart';
-import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 
 class RunUpgradeExecutable extends Executable<Map<String, dynamic>> {
   RunUpgradeExecutable(Map<String, dynamic> message)
@@ -46,7 +46,7 @@ class RunUpgradeExecutable extends Executable<Map<String, dynamic>> {
     if (dbInfo.flavor == "postgres") {
       store = PostgreSQLPersistentStore(dbInfo.username, dbInfo.password,
           dbInfo.host, dbInfo.port, dbInfo.databaseName,
-          timeZone: dbInfo.timeZone);
+          timeZone: dbInfo.timeZone, useSSL: dbInfo.useSSL);
     }
 
     var migrationTypes = currentMirrorSystem()
@@ -119,7 +119,8 @@ class RunUpgradeExecutable extends Executable<Map<String, dynamic>> {
 
 class DBInfo {
   DBInfo(this.flavor, this.username, this.password, this.host, this.port,
-      this.databaseName, this.timeZone);
+      this.databaseName, this.timeZone,
+      {this.useSSL = false});
 
   DBInfo.fromMap(Map<String, dynamic> map)
       : flavor = map["flavor"] as String?,
@@ -128,7 +129,8 @@ class DBInfo {
         host = map["host"] as String?,
         port = map["port"] as int?,
         databaseName = map["databaseName"] as String?,
-        timeZone = map["timeZone"] as String?;
+        timeZone = map["timeZone"] as String?,
+        useSSL = (map["useSSL"] ?? false) as bool;
 
   final String? flavor;
   final String? username;
@@ -137,6 +139,7 @@ class DBInfo {
   final int? port;
   final String? databaseName;
   final String? timeZone;
+  final bool useSSL;
 
   Map<String, dynamic> asMap() {
     return {
@@ -146,7 +149,8 @@ class DBInfo {
       "host": host,
       "port": port,
       "databaseName": databaseName,
-      "timeZone": timeZone
+      "timeZone": timeZone,
+      "useSSL": useSSL
     };
   }
 }

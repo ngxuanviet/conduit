@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:conduit/src/cli/command.dart';
 import 'package:conduit/src/cli/metadata.dart';
 import 'package:path/path.dart' as path_lib;
+import 'package:path/path.dart';
 import 'package:pub_cache/pub_cache.dart';
 import 'package:yaml/yaml.dart';
-
-import 'package:conduit/src/cli/command.dart';
 
 /// Used internally.
 class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
@@ -17,12 +17,13 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
 
   @Option("template",
       abbr: "t", help: "Name of the template to use", defaultsTo: "default")
-  String get templateName => decode("template", orElse: () => "default");
+  String get templateName => decode("template");
 
   @Flag("offline",
       negatable: false,
-      help: "Will fetch dependencies from a local cache if they exist.")
-  bool get offline => decode("offline", orElse: () => false);
+      help: "Will fetch dependencies from a local cache if they exist.",
+      defaultsTo: false)
+  bool get offline => decode("offline");
 
   String? get projectName =>
       remainingArguments.isNotEmpty ? remainingArguments.first : null;
@@ -62,10 +63,26 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
     if (conduitPackageRef?.sourceType == "path") {
       final conduitLocation = conduitPackageRef!.resolve()!.location;
 
-      addDependencyOverridesToPackage(destDirectory.path, {
+      if (!addDependencyOverridesToPackage(destDirectory.path, {
         "conduit": conduitLocation.uri,
-        "conduit_test": conduitLocation.parent.uri.resolve("conduit_test/")
-      });
+        "conduit_test": _packageUri(conduitLocation, 'test_harness'),
+        "conduit_codable": _packageUri(conduitLocation, 'codable'),
+        "conduit_common": _packageUri(conduitLocation, 'common'),
+        "conduit_common_test": _packageUri(conduitLocation, 'common_test'),
+        "conduit_config": _packageUri(conduitLocation, 'config'),
+        "conduit_isolate_exec": _packageUri(conduitLocation, 'isolate_exec'),
+        "conduit_open_api": _packageUri(conduitLocation, 'open_api'),
+        "conduit_password_hash": _packageUri(conduitLocation, 'password_hash'),
+        "conduit_runtime": _packageUri(conduitLocation, 'runtime'),
+      })) {
+        displayError(
+            'You are running from a local source (pub global activate --source=path) version of conduit and are missing the source for some dependencies.');
+        return 1;
+      }
+    } else {
+      displayError(
+          "We can't find conduit in the pub cache. Check that your PUB_CACHE is set correctly.");
+      return 1;
     }
 
     displayInfo(
@@ -86,6 +103,10 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
         "See ${destDirectory.path}${path_lib.separator}README.md for more information.");
 
     return 0;
+  }
+
+  Uri _packageUri(Directory conduitLocation, String packageDir) {
+    return Directory(join(conduitLocation.path, '..', packageDir)).uri;
   }
 
   bool shouldIncludeItem(FileSystemEntity entity) {
@@ -171,11 +192,7 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
     if (pathString.startsWith("/")) {
       return Directory(pathString);
     }
-    var currentDirPath = Directory.current.uri.toFilePath();
-    if (!currentDirPath.endsWith(path_lib.separator)) {
-      currentDirPath += path_lib.separator;
-    }
-    currentDirPath += pathString;
+    var currentDirPath = join(Directory.current.path, pathString);
 
     return Directory(currentDirPath);
   }
@@ -187,20 +204,27 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
         .copySync(File(path_lib.join(directoryPath, "config.yaml")).path);
   }
 
-  void addDependencyOverridesToPackage(
+  bool addDependencyOverridesToPackage(
       String packageDirectoryPath, Map<String, Uri> overrides) {
     var pubspecFile = File(path_lib.join(packageDirectoryPath, "pubspec.yaml"));
     var contents = pubspecFile.readAsStringSync();
 
+    bool valid = true;
+
     final overrideBuffer = StringBuffer();
     overrideBuffer.writeln("dependency_overrides:");
     overrides.forEach((packageName, location) {
+      var path = location.toFilePath(windows: Platform.isWindows);
+
+      valid &= _testPackagePath(path, packageName);
       overrideBuffer.writeln("  $packageName:");
       overrideBuffer.writeln(
           "    path:  ${location.toFilePath(windows: Platform.isWindows)}");
     });
 
     pubspecFile.writeAsStringSync("$contents\n$overrideBuffer");
+
+    return valid;
   }
 
   void copyProjectFiles(Directory destinationDirectory,
@@ -290,6 +314,24 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
   String get description {
     return "Creates Conduit applications from templates.";
   }
+
+  /// check if a path exists sync.
+  bool _exists(String path) {
+    return Directory(path).existsSync();
+  }
+
+  /// test if the given package dir exists in the test path
+  bool _testPackagePath(String testPath, String packageName) {
+    String packagePath = _truepath(testPath);
+    if (!_exists(packagePath)) {
+      displayError(
+          "The source for path '$packageName' doesn't exists. Expected to find it at '$packagePath'");
+      return false;
+    }
+    return true;
+  }
+
+  String _truepath(String path) => canonicalize(absolute(path));
 }
 
 class CLITemplateList extends CLICommand with CLIConduitGlobal {
@@ -337,8 +379,11 @@ class CLIConduitGlobal {
   PubCache pub = PubCache();
 
   PackageRef? get conduitPackageRef {
-    return pub
-        .getGlobalApplications()
+    var apps = pub.getGlobalApplications();
+    if (apps.isEmpty) {
+      return null;
+    }
+    return apps
         .firstWhere((app) => app.name == "conduit")
         .getDefiningPackageRef();
   }

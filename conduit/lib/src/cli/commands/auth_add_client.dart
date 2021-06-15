@@ -14,19 +14,19 @@ import 'package:crypto/crypto.dart';
 class CLIAuthAddClient extends CLICommand
     with CLIDatabaseConnectingCommand, CLIDatabaseManagingCommand, CLIProject {
   @Option("id", abbr: "i", help: "The client ID to insert.")
-  String? get clientID => decode("id");
+  String? get clientID => decodeOptional("id");
 
   @Option("secret",
       abbr: "s",
       help:
           "The client secret. This secret will be hashed on insertion, so you *must* store it somewhere. For public clients, this option may be omitted.")
-  String? get secret => decode("secret");
+  String? get secret => decodeOptional("secret");
 
   @Option("redirect-uri",
       abbr: "r",
       help:
           "The redirect URI of the client if it supports the authorization code or implicit flow. May be omitted.")
-  String? get redirectUri => decode("redirect-uri");
+  String? get redirectUri => decodeOptional("redirect-uri");
 
   @Option("hash-function",
       help:

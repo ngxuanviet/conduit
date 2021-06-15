@@ -239,7 +239,7 @@ void main() {
 
       expect(result.dateCreated, isA<DateTime>());
       expect(result.dateCreated!.difference(DateTime.now()).inMilliseconds,
-          closeTo(0, 100));
+          closeTo(0, 1000));
     });
 
     test("works when timestamp is set manually.", () async {

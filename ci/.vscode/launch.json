@@ -1,0 +1,22 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "setup_unit_tests",
+            "request": "launch",
+            "type": "dart",
+            "program": "bin/setup_unit_tests.dart",
+            "console": "terminal"
+        },
+        {
+            "name": "pre-hook-setup",
+            "request": "launch",
+            "type": "dart",
+            "program": "tool/critical_test/pre_hook/setup.dart",
+            "console": "terminal"
+        }
+    ]
+}

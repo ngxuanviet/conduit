@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:conduit/src/cli/command.dart';
+import 'package:conduit/src/cli/migration_source.dart';
 import 'package:conduit/src/cli/mixins/database_connecting.dart';
 import 'package:conduit/src/cli/mixins/database_managing.dart';
 import 'package:conduit/src/cli/mixins/project.dart';
 import 'package:conduit/src/cli/scripts/run_upgrade.dart';
 import 'package:conduit/src/db/postgresql/postgresql_persistent_store.dart';
 import 'package:conduit/src/db/query/query.dart';
-import 'package:conduit/src/cli/migration_source.dart';
 import 'package:conduit/src/db/schema/schema.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 
@@ -96,7 +96,8 @@ class CLIDatabaseUpgrade extends CLICommand
     var s = persistentStore;
     if (s is PostgreSQLPersistentStore) {
       return DBInfo("postgres", s.username, s.password, s.host, s.port,
-          s.databaseName, s.timeZone);
+          s.databaseName, s.timeZone,
+          useSSL: s.isSSLConnection);
     }
 
     return null;

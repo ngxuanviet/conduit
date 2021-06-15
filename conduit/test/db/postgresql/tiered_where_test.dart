@@ -1,8 +1,7 @@
 import 'package:conduit/conduit.dart';
+import 'package:conduit/src/dev/model_graph.dart';
 import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:test/test.dart';
-
-import 'package:conduit/src/dev/model_graph.dart';
 
 /*
   If you're going to look at these tests, you'll have to draw out the model graph defined in model_graph.dart

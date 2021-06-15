@@ -71,7 +71,7 @@ grant_type=refresh_token&refresh_token=kjasdiuz9u3namnsd
 
 See [Conduit Auth CLI](cli.md) for more details on creating OAuth 2.0 client identifier and secrets.
 
-If an Conduit application is using scope, an additional `scope` parameter can contain a space-delimited list of requested authorization scope. Only allowed scopes are returned and granted, and if no scopes are allowed then the request fails. If scope is provided, granted scope will be available in the response body.
+If a Conduit application is using scope, an additional `scope` parameter can contain a space-delimited list of requested authorization scope. Only allowed scopes are returned and granted, and if no scopes are allowed then the request fails. If scope is provided, granted scope will be available in the response body.
 
 It is important that an `Authorizer` _must not_ protect instances of `AuthController`. The Authorization header is parsed and verified by `AuthController`.
 
@@ -79,9 +79,9 @@ Once granted, an access token can be used to pass `Authorizer.bearer()`s in the 
 
 ## Issue Authorization Codes with AuthCodeController
 
-An `AuthCodeController` manages the OAuth 2.0 authorization code flow. The authorization code flow is used when an Conduit application allows third party applications access to authorized resources.
+An `AuthCodeController` manages the OAuth 2.0 authorization code flow. The authorization code flow is used when a Conduit application allows third party applications access to authorized resources.
 
-Let's say you've built an Conduit application that allows people to store notes for themselves. Now, a friend approaches you with their application that is a to-do list. Instead of building their own note-taking feature, your friend wants users of their application to access the notes the user has stored in your application. While trustworthy, you don't want your friend to have access to the username and passwords of your subscribers.
+Let's say you've built a Conduit application that allows people to store notes for themselves. Now, a friend approaches you with their application that is a to-do list. Instead of building their own note-taking feature, your friend wants users of their application to access the notes the user has stored in your application. While trustworthy, you don't want your friend to have access to the username and passwords of your subscribers.
 
 Your friend adds a link to their application that takes the user to an HTML page hosted by your server. The user enters their credentials in this page, which sends a `POST` request to your server. Your server responds by redirecting the user's browser back into your friend's application. An _authorization code_ is included in the query string of the redirect URL.
 

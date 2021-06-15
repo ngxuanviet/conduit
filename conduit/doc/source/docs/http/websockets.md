@@ -53,7 +53,7 @@ socket.listen(...);
 
 ## Bi-directional Communication
 
-In the simple example above, the server only listens for data from the client. For data to be sent to the client, a reference must be kept to the `WebSocket` so that data can be added to it. How an Conduit application manages its websocket connections depends greatly on the behavior of the application, the number of isolates the application is running on and the infrastructure of the system as a whole.
+In the simple example above, the server only listens for data from the client. For data to be sent to the client, a reference must be kept to the `WebSocket` so that data can be added to it. How a Conduit application manages its websocket connections depends greatly on the behavior of the application, the number of isolates the application is running on and the infrastructure of the system as a whole.
 
 A simple application might keep track of websocket connections in a `Map`, where the key is a user identifier acquired from the authorization of the request:
 
@@ -95,7 +95,7 @@ Note that this simple implementation doesn't account for multiple connections fr
 
 ## Considerations for Multi-Isolate and Multi-Instance Applications
 
-By default, an Conduit application runs on multiple isolates. Since each isolate has its own heap, a websocket created on one isolate is not directly accessible by another isolate. In the example above, each isolate would have its own map of connections - therefore, a message is only sent to connections that were opened on the same isolate that the chat message originated from.
+By default, a Conduit application runs on multiple isolates. Since each isolate has its own heap, a websocket created on one isolate is not directly accessible by another isolate. In the example above, each isolate would have its own map of connections - therefore, a message is only sent to connections that were opened on the same isolate that the chat message originated from.
 
 A simple solution is to only run the application on a single isolate, ensuring that all websockets are on a single isolate and accessible to one another:
 
@@ -105,7 +105,7 @@ conduit serve -n 1
 
 For many applications, this is a fine solution. For others, it may not be.
 
-Recall that one of the benefits of Conduit's multi-isolate architecture is that code tested on a single instance will scale to multiple instances behind a load balancer. If an Conduit application runs correctly on a single, multi-isolate instance, it will run correctly on multiple instances. This \(somewhat\) enforced structure prevents us from naively keeping track of websocket connections on a single isolate, which would cause issues when we scale out to a multi-instance system.
+Recall that one of the benefits of Conduit's multi-isolate architecture is that code tested on a single instance will scale to multiple instances behind a load balancer. If a Conduit application runs correctly on a single, multi-isolate instance, it will run correctly on multiple instances. This \(somewhat\) enforced structure prevents us from naively keeping track of websocket connections on a single isolate, which would cause issues when we scale out to a multi-instance system.
 
 If you find yourself in a situation where your application is so popular you need multiple servers to efficiently serve requests, you'll have a good idea on how to architect an appropriate solution \(or you'll have the money to hire someone that does\). In many situations, the REST API and websocket server are separate instances anyhow - they have different lifecycles and deployment behavior. It may make sense to run a websocket server on a single isolate, since you are likely IO-bound instead of CPU bound.
 

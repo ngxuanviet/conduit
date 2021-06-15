@@ -16,7 +16,7 @@ conduit serve
 
 ### Initialization
 
-An Conduit application starts at an [ApplicationChannel](application/channel.md). You subclass it once per application to handle initialization tasks like setting up routes and database connections. An example application looks like this:
+A Conduit application starts at an [ApplicationChannel](application/channel.md). You subclass it once per application to handle initialization tasks like setting up routes and database connections. An example application looks like this:
 
 ```dart
 import 'package:conduit/conduit.dart';

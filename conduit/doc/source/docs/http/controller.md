@@ -4,7 +4,7 @@ In Conduit, HTTP requests and responses are instances of `Request`s and `Respons
 
 ## Overview
 
-A controller is the basic building block of an Conduit application. A controller handles an HTTP request in some way. For example, a controller could return a 200 OK response with a JSON-encoded list of city names. A controller could also check a request to make sure it had the right credentials in its authorization header.
+A controller is the basic building block of a Conduit application. A controller handles an HTTP request in some way. For example, a controller could return a 200 OK response with a JSON-encoded list of city names. A controller could also check a request to make sure it had the right credentials in its authorization header.
 
 Controllers are linked together to compose their behaviors into a _channel_. A channel handles a request by performing each of its controllers' behavior in order. For example, a channel might verify the credentials of a request and then return a list of city names by composing two controllers that take each of these actions.
 

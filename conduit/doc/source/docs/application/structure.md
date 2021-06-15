@@ -1,10 +1,10 @@
 # Application and Project Structure
 
-The purpose of this document is to understand the objects that comprise an Conduit application, and how they work with one another to serve HTTP requests. It also discusses the project structure on the filesystem.
+The purpose of this document is to understand the objects that comprise a Conduit application, and how they work with one another to serve HTTP requests. It also discusses the project structure on the filesystem.
 
 ## Controllers are Building Blocks
 
-The building blocks of an Conduit application are [Controllers](../http/controller.md). Each controller type has logic to handle an HTTP request in some way. Controllers are linked together to form a _channel_; an ordered series of controllers. A channel is a composition of its controllers' behaviors.
+The building blocks of a Conduit application are [Controllers](../http/controller.md). Each controller type has logic to handle an HTTP request in some way. Controllers are linked together to form a _channel_; an ordered series of controllers. A channel is a composition of its controllers' behaviors.
 
 For example, consider an `Authorizer` controller that verifies the request's authorization credentials are correct, and a `SecretController` that sends a response with secret information. By composing these two controllers together, we have a channel that verifies credentials before sending a secret. The benefit of controllers and channels is that controllers can be reused in multiple channels; the `Authorizer` can protect other types of controllers without any change to its logic.
 
@@ -57,7 +57,7 @@ See [this guide](channel.md) for more details on the application channel and ent
 
 ## Conduit Project Structure and Organization
 
-An Conduit project is a directory that contains, at minimum, the following file structure:
+A Conduit project is a directory that contains, at minimum, the following file structure:
 
 ```text
 pubspec.yaml
@@ -65,7 +65,7 @@ lib/
   application_name.dart
 ```
 
-The name of any Dart application is defined by the `name` key in `pubspec.yaml`. In order for `conduit serve` to run your application, there must be a `.dart` file in `lib/` with that same name. This is your application library file and it must declare a `ApplicationChannel` subclass or import a file that does. This is the bare minimum requirement to run an Conduit application. \(See [Deploying]() for more details on running applications.\)
+The name of any Dart application is defined by the `name` key in `pubspec.yaml`. In order for `conduit serve` to run your application, there must be a `.dart` file in `lib/` with that same name. This is your application library file and it must declare a `ApplicationChannel` subclass or import a file that does. This is the bare minimum requirement to run a Conduit application. \(See [Deploying]() for more details on running applications.\)
 
 For organizing applications of reasonable size, we recommend the following structure:
 
@@ -99,7 +99,7 @@ Feel free to create other subdirectories in `lib/` for organizing other types of
 
 ## Conduit and dart:io
 
-Conduit runs on top of `dart:io` and relies on its `HttpServer` implementation. When an Conduit application is started, one or more `HttpServer` instances are bound to the port specified by `conduit serve`. For each HTTP request, an instance of `Request` is created to wrap the `HttpRequest` from `dart:io`. The `Request` is added to a `ApplicationChannel`, sending it through the channel of `Controller`s until it is responded to.
+Conduit runs on top of `dart:io` and relies on its `HttpServer` implementation. When a Conduit application is started, one or more `HttpServer` instances are bound to the port specified by `conduit serve`. For each HTTP request, an instance of `Request` is created to wrap the `HttpRequest` from `dart:io`. The `Request` is added to a `ApplicationChannel`, sending it through the channel of `Controller`s until it is responded to.
 
 In rare circumstances, you may choose to remove a `Request` from the application channel and manipulate the request with `dart:io` only. Once removed, it is your responsibility to respond to the request by setting properties on and closing the `HttpRequest.response`. To take a request out of the channel, simply return `null` from a `Controller`:
 

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:conduit/src/cli/runner.dart';
 import 'package:conduit/src/cli/running_process.dart';
 import 'package:conduit_common_test/conduit_common_test.dart';
+import 'package:dcli/dcli.dart';
 
 import 'package:fs_test_agent/dart_project_agent.dart';
 import 'package:fs_test_agent/working_directory_agent.dart';
@@ -68,19 +69,46 @@ class CLIClient {
     return CLIClient(DartProjectAgent.existing(dstUri));
   }
 
+  /// Clears any cached output from a prior call to [run].
   void clearOutput() {
     _output.clear();
   }
 
-  Future<CLIClient> createProject(
+  Future<CLIClient> createTestProject(
       {String name = "application_test",
       String? template,
       bool offline = true}) async {
+    final project = DartProject.fromPath('.');
     if (template == null) {
       final client = CLIClient(DartProjectAgent(name, dependencies: {
-        "conduit": {"path": "../.."}
+        "conduit": {"path": DartProject.fromPath('.').pathToProjectRoot}
       }, devDependencies: {
         "test": "^1.6.7"
+      }, dependencyOverrides: {
+        'conduit_runtime': {
+          'path': '${join(project.pathToProjectRoot, '..', 'runtime')}'
+        },
+        'conduit_isolate_exec': {
+          'path': '${join(project.pathToProjectRoot, '..', 'isolate_exec')}'
+        },
+        'conduit_password_hash': {
+          'path': '${join(project.pathToProjectRoot, '..', 'password_hash')}'
+        },
+        'conduit_open_api': {
+          'path': '${join(project.pathToProjectRoot, '..', 'open_api')}'
+        },
+        'conduit_codable': {
+          'path': '${join(project.pathToProjectRoot, '..', 'codable')}'
+        },
+        'conduit_config': {
+          'path': '${join(project.pathToProjectRoot, '..', 'config')}'
+        },
+        'conduit_common': {
+          'path': '${join(project.pathToProjectRoot, '..', 'common')}'
+        },
+        'fs_test_agent': {
+          'path': '${join(project.pathToProjectRoot, '..', 'fs_test_agent')}'
+        }
       }));
 
       client.projectAgent.addLibraryFile("channel", """

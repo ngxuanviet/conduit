@@ -1,11 +1,9 @@
 import 'dart:io';
 
-import 'package:test/test.dart';
 import 'package:conduit/conduit.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:conduit_test/conduit_test.dart';
-
 import 'package:conduit/src/dev/helpers.dart';
+import 'package:conduit_test/conduit_test.dart';
+import 'package:test/test.dart';
 
 void main() {
   late InMemoryAuthStorage delegate;

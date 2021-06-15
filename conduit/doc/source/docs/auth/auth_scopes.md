@@ -68,7 +68,7 @@ If a `Scope` annotation or `Authorizer` contains multiple scope entries, an acce
 
 ### Defining Permissible Scope
 
-When a client application authenticates on behalf of a user, it includes a list of request scopes for the access token. An Conduit application will grant the requested scopes to the token if the scopes are permissible for both the authenticating client identifier and the authenticating user.
+When a client application authenticates on behalf of a user, it includes a list of request scopes for the access token. A Conduit application will grant the requested scopes to the token if the scopes are permissible for both the authenticating client identifier and the authenticating user.
 
 To add permissible scopes to an authenticating client, you use the `conduit auth` command-line tool. When creating a new client identifier, include the `--allowed-scopes` options:
 

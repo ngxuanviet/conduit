@@ -7,6 +7,7 @@ import 'package:conduit/src/dev/helpers.dart';
 import 'package:conduit_test/conduit_test.dart';
 import 'package:test/test.dart';
 
+int port = 8887;
 void main() {
   HttpServer? server;
   AuthServer? authenticationServer;
@@ -24,7 +25,7 @@ void main() {
     router!.didAddToChannel();
 
     server =
-        await HttpServer.bind("localhost", 8888, v6Only: false, shared: false);
+        await HttpServer.bind("localhost", port, v6Only: false, shared: false);
     server!.map((req) => Request(req)).listen(router!.receive);
   });
 
@@ -204,7 +205,7 @@ void main() {
       var encodedUsername = Uri.encodeQueryComponent(user1["username"]!);
       var encodedPassword = Uri.encodeQueryComponent(user1["password"]!);
       var encodedWrongUsername = Uri.encodeQueryComponent("!@#kjasd");
-      final client = Agent.onPort(8888)
+      final client = Agent.onPort(port)
         ..headers["authorization"] =
             "Basic ${base64.encode("com.stablekernel.app1:kilimanjaro".codeUnits)}";
 
@@ -250,7 +251,7 @@ void main() {
       var encodedPassword = Uri.encodeQueryComponent(user1["password"]!);
       var encodedWrongPassword = Uri.encodeQueryComponent("!@#kjasd");
 
-      final client = Agent.onPort(8888)
+      final client = Agent.onPort(port)
         ..headers["authorization"] =
             "Basic ${base64.encode("com.stablekernel.app1:kilimanjaro".codeUnits)}";
 
@@ -296,7 +297,7 @@ void main() {
           user1["username"]!, user1["password"]!, "com.stablekernel.redirect");
       var encodedCode = Uri.encodeQueryComponent(code.code!);
 
-      final client = Agent.onPort(8888)
+      final client = Agent.onPort(port)
         ..setBasicAuthorization("com.stablekernel.redirect", "mckinley");
 
       var req = client.request("/auth/token")
@@ -329,7 +330,7 @@ void main() {
     Agent? client;
 
     setUp(() {
-      client = Agent.onPort(8888)
+      client = Agent.onPort(port)
         ..setBasicAuthorization("com.stablekernel.app1", "kilimanjaro");
     });
 
@@ -387,7 +388,7 @@ void main() {
     Agent? client;
 
     setUp(() {
-      client = Agent.onPort(8888)
+      client = Agent.onPort(port)
         ..setBasicAuthorization("com.stablekernel.app1", "kilimanjaro");
     });
 
@@ -456,7 +457,7 @@ void main() {
     Agent? client;
 
     setUp(() {
-      client = Agent.onPort(8888);
+      client = Agent.onPort(port);
     });
 
     test("Client omits authorization header", () async {
@@ -515,7 +516,7 @@ void main() {
     Agent? client;
 
     setUp(() async {
-      client = Agent.onPort(8888);
+      client = Agent.onPort(port);
 
       refreshTokenString = (await authenticationServer!.authenticate(
               user1["username"]!,
@@ -581,7 +582,7 @@ void main() {
     Agent? client;
 
     setUp(() async {
-      client = Agent.onPort(8888);
+      client = Agent.onPort(port);
 
       code = (await authenticationServer!.authenticateForCode(
               user1["username"]!,
@@ -643,7 +644,7 @@ void main() {
         "scope": "other_scope"
       };
 
-      final client = Agent.onPort(8888)
+      final client = Agent.onPort(port)
         ..setBasicAuthorization("com.stablekernel.scoped", "kilimanjaro");
       var req = client.request("/auth/token")
         ..contentType = ContentType("application", "x-www-form-urlencoded")
@@ -759,7 +760,7 @@ dynamic hasAuthResponse(int statusCode, dynamic body) =>
 
 Future<TestResponse?> grant(
     String clientID, String clientSecret, Map<String, String> form) {
-  Agent client = Agent.onPort(8888)
+  Agent client = Agent.onPort(port)
     ..setBasicAuthorization(clientID, clientSecret);
 
   final m = Map<String, String>.from(form);
@@ -774,7 +775,7 @@ Future<TestResponse?> grant(
 
 Future<TestResponse?> refresh(
     String clientID, String clientSecret, Map<String, String> form) {
-  Agent client = Agent.onPort(8888)
+  Agent client = Agent.onPort(port)
     ..setBasicAuthorization(clientID, clientSecret);
 
   final m = Map<String, String>.from(form);
@@ -789,7 +790,7 @@ Future<TestResponse?> refresh(
 
 Future<TestResponse?> exchange(
     String clientID, String clientSecret, String? code) {
-  Agent client = Agent.onPort(8888)
+  Agent client = Agent.onPort(port)
     ..setBasicAuthorization(clientID, clientSecret);
 
   var m = {"grant_type": "authorization_code"};

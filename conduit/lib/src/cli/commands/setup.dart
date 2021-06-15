@@ -11,27 +11,27 @@ class CLISetup extends CLICommand with CLIProject {
   @Option("heroku",
       help:
           "DEPRECATED. Please see https://conduit.io/docs/deploy/deploy_heroku/.")
-  String? get herokuName => decode("heroku");
+  String? get herokuName => decodeOptional("heroku");
 
   @Flag("tests",
       help:
           "Sets up a local database to run application tests. If no other option is on, the command defaults to this flag.",
       defaultsTo: true)
-  bool get shouldSetupTests => decode("tests")!;
+  bool get shouldSetupTests => decode("tests");
 
   @Flag("confirm",
       abbr: "c",
       negatable: false,
       help: "Confirms that you wish to carry out this setup.",
       defaultsTo: false)
-  bool get confirm => decode("confirm")!;
+  bool get confirm => decode("confirm");
 
   @Option("granting-user",
       abbr: "u",
       defaultsTo: "postgres",
       help:
           "The username of the PostgreSQL user that has privileges to create a new test user and test database.")
-  String get grantingUser => decode("granting-user")!;
+  String get grantingUser => decode("granting-user");
 
   @override
   Future<int> handle() async {
@@ -51,7 +51,7 @@ class CLISetup extends CLICommand with CLIProject {
     if (!hasPSQLCLI) {
       displayError(
           "The application 'psql' was not found in \$PATH.\n\nIf you do not have PostgreSQL installed locally, "
-          "you must do so to run tests in an Conduit application. For macOS users, "
+          "you must do so to run tests in a Conduit application. For macOS users, "
           "download Postgres.app from http://postgresapp.com. Once installed, open the "
           "application at least once and add the following line to ~/.bash_profile:\n\n"
           "\texport PATH=\$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin\n\n"

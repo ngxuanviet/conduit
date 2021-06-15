@@ -2,11 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:conduit/conduit.dart';
+import 'package:conduit/src/dev/helpers.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:test/test.dart';
-
-import 'package:conduit/src/dev/helpers.dart';
 
 void main() {
   late APIDocument doc;
@@ -225,24 +224,24 @@ void main() {
     });
 
     test("Can emit document for ManagedObjectController", () {
-      expect(doc.paths!["/model"]!.operations!.length, 2);
+      expect(doc.paths!["/model"]!.operations.length, 2);
       expect(
-          doc.paths!["/model"]!.operations!["get"]!.responses!["200"]!
+          doc.paths!["/model"]!.operations["get"]!.responses!["200"]!
               .content!["application/json"]!.schema!.type,
           APIType.array);
       expect(
-          doc.paths!["/model"]!.operations!["get"]!.responses!["200"]!
+          doc.paths!["/model"]!.operations["get"]!.responses!["200"]!
               .content!["application/json"]!.schema!.items!.referenceURI!.path,
           "/components/schemas/Model1");
       expect(
-          doc.paths!["/model"]!.operations!["post"]!.requestBody!
+          doc.paths!["/model"]!.operations["post"]!.requestBody!
               .content!["application/json"]!.schema!.referenceURI!.path,
           "/components/schemas/Model1");
 
-      expect(doc.paths!["/model/{id}"]!.operations!.length, 3);
+      expect(doc.paths!["/model/{id}"]!.operations.length, 3);
 
-      expect(doc.paths!["/subclass"]!.operations!.length, 2);
-      expect(doc.paths!["/subclass/{id}"]!.operations!.length, 3);
+      expect(doc.paths!["/subclass"]!.operations.length, 2);
+      expect(doc.paths!["/subclass/{id}"]!.operations.length, 3);
     });
   });
 

@@ -1,4 +1,5 @@
 import 'dart:mirrors';
+import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 
@@ -135,8 +136,8 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
         importUris.add(annotation.element!.source!.uri);
         return [annotation.toSource().substring(1)];
       } else if (isInstanceOfColumn) {
-        final originatingLibrary =
-            element.session!.getParsedLibraryByElement(element.library);
+        final originatingLibrary = element.session!
+            .getParsedLibraryByElement2(element.library) as ParsedLibraryResult;
         final elementDeclaration = originatingLibrary
             .getElementDeclaration(element.variable)!
             .node as VariableDeclaration;
@@ -230,12 +231,10 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
         ? "null"
         : _getManagedTypeInstantiator(type.elements);
 
-    final enumStr = type.enumerationMap == null
-        ? "{}"
-        : "{${type.enumerationMap.keys.map((k) {
-            var vStr = sourcifyValue(type.enumerationMap[k]);
-            return "'$k': $vStr";
-          }).join(",")}}";
+    final enumStr = "{${type.enumerationMap.keys.map((k) {
+      var vStr = sourcifyValue(type.enumerationMap[k]);
+      return "'$k': $vStr";
+    }).join(",")}}";
 
     return "ManagedType.make<${type.type}>(${type.kind}, $elementStr, $enumStr)";
   }

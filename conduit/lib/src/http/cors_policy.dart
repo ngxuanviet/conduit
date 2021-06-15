@@ -4,7 +4,7 @@ import 'http.dart';
 /// Describes a CORS policy for a [Controller].
 ///
 /// A CORS policy describes allowed origins, accepted HTTP methods and headers, exposed response headers
-/// and other values used by browsers to manage XHR requests to an Conduit application.
+/// and other values used by browsers to manage XHR requests to a Conduit application.
 ///
 /// Every [Controller] has a [Controller.policy]. By default, this value is [defaultPolicy], which is quite permissive.
 ///

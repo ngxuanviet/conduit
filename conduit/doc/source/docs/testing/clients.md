@@ -1,6 +1,6 @@
 # Using Conduit when Writing Client Applications
 
-Running an Conduit server locally while developing client applications is an important part of the development process. Run applications through their `bin/main.dart` script or `conduit serve`. The former allows for [debugging](debugger.md) the application with a debugger.
+Running a Conduit server locally while developing client applications is an important part of the development process. Run applications through their `bin/main.dart` script or `conduit serve`. The former allows for [debugging](debugger.md) the application with a debugger.
 
 ## Enable Logging and Return Server Errors
 

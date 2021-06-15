@@ -1,9 +1,9 @@
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit/src/db/managed/managed.dart';
-import 'package:conduit_runtime/runtime.dart';
 import 'package:conduit/src/db/query/query.dart';
 import 'package:conduit/src/utilities/reference_counting_list.dart';
 import 'package:conduit_common/conduit_common.dart';
+import 'package:conduit_runtime/runtime.dart';
 
 /// Instances of this class contain descriptions and metadata for mapping [ManagedObject]s to database rows.
 ///

@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:conduit/conduit.dart';
 import 'package:conduit/managed_auth.dart';
 import 'package:conduit_common_test/conduit_common_test.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:conduit_test/conduit_test.dart';
 import 'package:test/test.dart';
 

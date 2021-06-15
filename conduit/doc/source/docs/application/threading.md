@@ -1,6 +1,6 @@
 # Multi-threading in Conduit
 
-One of the primary differentiators between Conduit and other server frameworks is its multi-threaded behavior. When an Conduit application starts, it replicates the application logic across a number of threads.
+One of the primary differentiators between Conduit and other server frameworks is its multi-threaded behavior. When a Conduit application starts, it replicates the application logic across a number of threads.
 
 In Dart, threads are called _isolates_. The difference in naming isn't just to be cute - an isolate is a little bit different than a thread in that memory is not shared between isolates. Each isolate has its own heap \(this is where memory for objects is allocated from\) that other isolates can't access.
 
@@ -14,7 +14,7 @@ Because an `ApplicationChannel` is a type - and can be instantiated - Conduit si
 
 More importantly, you - the programmer - have to do absolutely nothing to take advantage of Conduit's multi-threaded behavior. You simply have to pick the number of isolates you want to run the application on \(see [this section](threading.md#how-many-isolates-should-i-use)\).
 
-While you don't have to do anything in an Conduit application to take advantage of multiple processors, there are things you shouldn't do or should do in another way.
+While you don't have to do anything in a Conduit application to take advantage of multiple processors, there are things you shouldn't do or should do in another way.
 
 First, you must be careful of keeping any state in your application. After initialization, any objects created while handling a request should be destroyed once the request is fulfilled. Any data that needs to be persisted must be stored in a database or other data store. This is just good practice for a REST API anyhow, so nothing is really lost here.
 
@@ -32,7 +32,7 @@ There are a number of variables that factor into the isolate count decision. Fir
 
 While a few milliseconds difference in speed to handle a single request isn't all that meaningful, when you start receiving thousands of requests at a time, these milliseconds add up. When your application is struggling to keep up with executing instructions, it is said to be _CPU-bound_. \(When your application is struggling to transmit data, it is said to be _IO-bound_.\)
 
-A CPU-bound application has two choices: execute less instructions or have more processors \(or cores\) to execute instructions with. Most computers these days have multiple processors. When only using a single isolate, an Conduit application can only use one of those processors at a time. As the number of isolates increases, so too do the number of processors that can be used at a time.
+A CPU-bound application has two choices: execute less instructions or have more processors \(or cores\) to execute instructions with. Most computers these days have multiple processors. When only using a single isolate, a Conduit application can only use one of those processors at a time. As the number of isolates increases, so too do the number of processors that can be used at a time.
 
 Thus, more isolates means more processors means more instructions and your application bound less by the CPU. However, there is a limit - creating 100 isolates when there are only two processors doesn't yield any greater performance, because 50 isolates will fight over a single processor. In fact, the amount of work to schedule these instructions and the amount of memory this many isolates will consume will hurt performance.
 

@@ -1,6 +1,6 @@
 # HTTP/REST
 
-An Conduit application serves HTTP clients by sending responses for requests.
+A Conduit application serves HTTP clients by sending responses for requests.
 
 You create and link `Controller` objects to handle requests. There are many subclasses of `Controller` that handle common tasks, and you often create your own subclasses of `Controller` to implement application logic. Most of your logic is implemented in subclasses of `ResourceController`, a controller type geared for REST API endpoints.
 

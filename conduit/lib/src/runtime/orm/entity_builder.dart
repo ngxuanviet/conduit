@@ -1,14 +1,14 @@
 import 'dart:mirrors';
 
 import 'package:collection/collection.dart' show IterableExtension;
-import 'package:conduit/src/runtime/orm/data_model_compiler.dart';
 import 'package:conduit/src/db/managed/attributes.dart';
 import 'package:conduit/src/db/managed/data_model.dart';
-import 'package:conduit/src/runtime/orm/entity_mirrors.dart';
 import 'package:conduit/src/db/managed/managed.dart';
 import 'package:conduit/src/db/managed/object.dart';
-import 'package:conduit/src/runtime/orm/property_builder.dart';
 import 'package:conduit/src/db/managed/relationship_type.dart';
+import 'package:conduit/src/runtime/orm/data_model_compiler.dart';
+import 'package:conduit/src/runtime/orm/entity_mirrors.dart';
+import 'package:conduit/src/runtime/orm/property_builder.dart';
 import 'package:conduit/src/runtime/orm_impl.dart';
 import 'package:conduit/src/utilities/mirror_helpers.dart';
 import 'package:logging/logging.dart';

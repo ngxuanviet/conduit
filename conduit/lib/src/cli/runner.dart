@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:conduit/src/cli/commands/auth.dart';
 import 'package:conduit/src/cli/command.dart';
+import 'package:conduit/src/cli/commands/auth.dart';
 import 'package:conduit/src/cli/commands/build.dart';
 import 'package:conduit/src/cli/commands/create.dart';
 import 'package:conduit/src/cli/commands/db.dart';

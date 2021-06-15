@@ -1,5 +1,5 @@
-import 'package:conduit/src/http/http.dart';
 import 'package:conduit/src/auth/auth.dart';
+import 'package:conduit/src/http/http.dart';
 
 /// Allows [ResourceController]s to have different scope for each operation method.
 ///

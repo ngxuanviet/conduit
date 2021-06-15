@@ -5,16 +5,16 @@ import 'package:conduit/src/cli/command.dart';
 import 'package:conduit/src/cli/metadata.dart';
 import 'package:conduit/src/cli/scripts/get_channel_type.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
+import 'package:path/path.dart' as path_lib;
 import 'package:pub_semver/pub_semver.dart';
 import 'package:yaml/yaml.dart';
-import 'package:path/path.dart' as path_lib;
 
 abstract class CLIProject implements CLICommand {
   @Option("directory",
       abbr: "d", help: "Project directory to execute command in")
   Directory? get projectDirectory {
     if (_projectDirectory == null) {
-      String? dir = decode("directory");
+      String? dir = decodeOptional("directory");
       if (dir == null) {
         _projectDirectory = Directory.current.absolute;
       } else {

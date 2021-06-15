@@ -1,5 +1,5 @@
+import 'package:conduit/src/auth/auth.dart';
 import 'package:test/test.dart';
-import 'package:conduit/conduit.dart';
 
 void main() {
   test("Generated confidential, redirectable API client has valid values", () {

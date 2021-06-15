@@ -1,11 +1,12 @@
 // ignore: unnecessary_const
-@Tags(const ["cli"])
+@Tags(["cli"])
 import 'dart:io';
 
-import 'package:path/path.dart' as path_lib;
-import 'package:pub_semver/pub_semver.dart';
+import 'package:dcli/dcli.dart';
 import 'package:fs_test_agent/dart_project_agent.dart';
 import 'package:fs_test_agent/working_directory_agent.dart';
+import 'package:path/path.dart' as path_lib;
+import 'package:pub_semver/pub_semver.dart';
 import 'package:test/test.dart';
 import 'package:yaml/yaml.dart';
 
@@ -45,8 +46,8 @@ void main() {
       expect(res, 0);
 
       expect(
-        Directory.fromUri(
-          cli.agent.workingDirectory.uri.resolve("test_project/"),
+        Directory(
+          join(cli.agent.workingDirectory.path, "test_project"),
         ).existsSync(),
         isTrue,
       );
@@ -68,8 +69,8 @@ void main() {
       expect(cli.output, contains("snake_case"));
 
       expect(
-        Directory.fromUri(
-          cli.agent.workingDirectory.uri.resolve("test_project/"),
+        Directory(
+          join(cli.agent.workingDirectory.path, "test_project/"),
         ).existsSync(),
         isFalse,
       );
@@ -82,8 +83,8 @@ void main() {
       expect(cli.output, contains("snake_case"));
 
       expect(
-        Directory.fromUri(
-          cli.agent.workingDirectory.uri.resolve("test_project/"),
+        Directory(
+          join(cli.agent.workingDirectory.path, "test_project"),
         ).existsSync(),
         isFalse,
       );
@@ -115,9 +116,8 @@ void main() {
       var res = await cli.run("create", ["test_project", "--offline"]);
       expect(res, 0);
 
-      var conduitLocationString = File.fromUri(cli.agent.workingDirectory.uri
-              .resolve("test_project/")
-              .resolve(".packages"))
+      var conduitLocationString = File(join(
+              cli.agent.workingDirectory.path, "test_project", ".packages"))
           .readAsStringSync()
           .split("\n")
           .firstWhere((p) => p.startsWith("conduit:"))
@@ -141,8 +141,8 @@ void main() {
       test(
         "Templates can use 'this' version of Conduit in their dependencies",
         () {
-          var projectDir = Directory("templates/$template/");
-          var pubspec = File.fromUri(projectDir.uri.resolve("pubspec.yaml"));
+          var projectDir = Directory(join("templates", template));
+          var pubspec = File(join(projectDir.path, "pubspec.yaml"));
           var contents = loadYaml(pubspec.readAsStringSync());
           final projectVersionConstraint = VersionConstraint.parse(
             contents["dependencies"]["conduit"] as String,
@@ -165,21 +165,22 @@ void main() {
           isZero,
         );
 
-        final cmd = Platform.isWindows ? "pub.bat" : "pub";
-        var res = Process.runSync(
-          cmd,
-          ["run", "test", "-j", "1"],
-          runInShell: true,
-          workingDirectory: cli.agent.workingDirectory.uri
-              .resolve("test_project")
-              .toFilePath(windows: Platform.isWindows),
-        );
+        var testPath = join(cli.agent.workingDirectory.path, 'test_project');
+        DartSdk().runPubGet(testPath);
 
-        print(res.stdout);
-        print(res.stderr);
+        var progress = DartSdk().runPub(
+            args: ["run", "test", "-j", "1"],
+            workingDirectory: testPath,
+            progress: Progress.capture(),
+            nothrow: true);
 
-        expect(res.stdout, contains("All tests passed"));
-        expect(res.exitCode, 0);
+        /// If the test failed dump the output so we can diagnose the problem
+        if (progress.exitCode != 0) {
+          progress.lines.forEach(print);
+        }
+
+        expect(progress.lines.join('\n'), contains("All tests passed!"));
+        expect(progress.exitCode, 0);
       });
     }
   });

@@ -1,8 +1,8 @@
 # 1. Getting Started
 
-By the end of this tutorial, you will have created an Conduit application that serves fictional heroes from a PostgreSQL database. You will learn the following:
+By the end of this tutorial, you will have created a Conduit application that serves fictional heroes from a PostgreSQL database. You will learn the following:
 
-* Run an Conduit application
+* Run a Conduit application
 * Route HTTP requests to the appropriate handler in your code
 * Store and retrieve database data
 * Write automated tests for each endpoint
@@ -320,7 +320,7 @@ In this simple exercise, we used a constant list of heroes as our source of data
 
 More generally, a web server should never hang on to data that can change. While previously just a best practice, stateless web servers are becoming a requirement with the prevalence of containerization and tools like Kubernetes. Conduit makes it a bit easier to detect violations of this rule with its multi-threading strategy.
 
-When you run an Conduit application, it creates multiple threads. Each of these threads has its own isolated heap in memory; meaning data that exists on one thread can't be accessed from other threads. In Dart, these isolated threads are called _isolates_.
+When you run a Conduit application, it creates multiple threads. Each of these threads has its own isolated heap in memory; meaning data that exists on one thread can't be accessed from other threads. In Dart, these isolated threads are called _isolates_.
 
 An instance of your application channel is created for each isolate. Each HTTP request is given to just one of the isolates to be handled. In a sense, your one application behaves the same as running your application on multiple servers behind a load balancer. \(It also makes your application substantially faster.\)
 

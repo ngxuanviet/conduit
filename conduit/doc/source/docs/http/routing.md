@@ -8,7 +8,7 @@ A URL is made up of many parts, some of which are optional. The typical URL we s
 
 More generally, the "About" page URL has the three required components of a URL: a _scheme_ \(`http`\), a _host_ \(`conduit.dart.com`\) and a _path_ \(`/about`\). The host specifies the computer responsible for providing the resource, the path identifies the resource and the scheme lets both the requester and the host know how they should exchange information.
 
-An Conduit application receives requests when the scheme is `http` \(or `https`\) and the host refers to a machine where the application is running. Therefore, once the application gets the request, it only cares about the remaining component: the path.
+A Conduit application receives requests when the scheme is `http` \(or `https`\) and the host refers to a machine where the application is running. Therefore, once the application gets the request, it only cares about the remaining component: the path.
 
 In Conduit, a `Router` routes `Request`s to a `Controller` based on the request path. This process is known as _routing_. When an application starts up, routes are registered in a subclass of `ApplicationChannel`. Each registered route creates a new [channel](../application/structure.md) of `Controller`s that will handle the request.
 

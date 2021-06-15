@@ -1,6 +1,6 @@
 # Configuring an Application and its Environment
 
-This guide covers configuring an Conduit application.
+This guide covers configuring a Conduit application.
 
 ## Configuration Files
 
@@ -89,7 +89,7 @@ It can sometimes makes sense to have a `local.yaml` with values for running the 
 
 ## Preventing Resource Leaks
 
-When an Conduit application starts, the application and its `ApplicationChannel`s will likely create services that they use to respond to requests. In order for application tests to complete successfully, these services must be "closed" when the application stops. For built-in services, like `PostgreSQLPersistentStore`, this happens automatically when `Application.stop()` is invoked.
+When a Conduit application starts, the application and its `ApplicationChannel`s will likely create services that they use to respond to requests. In order for application tests to complete successfully, these services must be "closed" when the application stops. For built-in services, like `PostgreSQLPersistentStore`, this happens automatically when `Application.stop()` is invoked.
 
 A `ServiceRegistry` automatically stops registered services. Registration looks like this:
 
@@ -152,9 +152,9 @@ class MyResourceController extends ResourceController {
 
 ## Configuring HTTPS
 
-By default, an Conduit application does not use HTTPS. In many cases, an Conduit application sits behind an SSL-enabled load balancer or some other proxy. The traffic from the load balancer is sent to the Conduit application unencrypted over HTTP.
+By default, a Conduit application does not use HTTPS. In many cases, a Conduit application sits behind an SSL-enabled load balancer or some other proxy. The traffic from the load balancer is sent to the Conduit application unencrypted over HTTP.
 
-However, Conduit may be configured to manage HTTPS connections itself. By passing the value private key and SSL certificate paths as options to `--ssl-key-path` _and_ `--ssl-certificate-path` in `conduit serve`, an Conduit application will configure itself to only allow HTTPS connections.
+However, Conduit may be configured to manage HTTPS connections itself. By passing the value private key and SSL certificate paths as options to `--ssl-key-path` _and_ `--ssl-certificate-path` in `conduit serve`, a Conduit application will configure itself to only allow HTTPS connections.
 
 ```bash
 conduit serve --ssl-key-path server.key.pem --ssl-certificate-path server.cert.pem
