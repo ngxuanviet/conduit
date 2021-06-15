@@ -3,3 +3,22 @@
 [![Test Suite](https://github.com/conduit-dart/conduit/actions/workflows/test.yml/badge.svg)](https://github.com/conduit-dart/conduit/actions/workflows/test.yml)
 
 [Discord](https://discord.gg/MHz5cqktHW)
+
+Conduit is a fork of Stablekernel's Aqueduct, a modern Dart HTTP server framework.
+
+## Getting Started
+
+1. [Install Dart](https://www.dartlang.org/install).
+2. Activate Conduit
+
+        pub global activate conduit
+
+3. Create a new project.
+
+        conduit create my_project
+
+## Tutorials, Documentation and Examples
+
+We are currently in the process of collating helpful resources for your edification. Our main docs live [here](https://gitbook.theconduit.dev/contributing)
+
+Conduit is a close fork to Aqueduct, so Aqueduct examples can be tweaked to work with Conduit [here](https://github.com/stablekernel/aqueduct_examples). The major concern is updating the code to use null-safety.
