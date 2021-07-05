@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:conduit_runtime/runtime.dart';
+import 'build_test.reflectable.dart';
 import 'package:test/test.dart';
 
 /*
@@ -11,6 +12,7 @@ need to test for local (relative), in pub cache (absolute)
 */
 
 void main() {
+  initializeReflectable();
   setUpAll(() async {
     var cmd;
     if (Platform.isWindows) {

@@ -1,12 +1,13 @@
 // ignore_for_file: avoid_print
 import 'dart:convert';
 import 'dart:io';
-import 'dart:mirrors';
 
 import 'package:conduit_runtime/src/build_context.dart';
 import 'package:conduit_runtime/src/compiler.dart';
 import 'package:conduit_runtime/src/file_system.dart';
 import 'package:conduit_runtime/src/generator.dart';
+
+import '../runtime.dart';
 
 class Build {
   Build(this.context);
@@ -49,26 +50,6 @@ class Build {
     };
     final overrides = pubspecMap['dependency_overrides'] as Map;
     var sourcePackageIsCompiled = false;
-
-    for (final compiler in compilers) {
-      final packageInfo = _getPackageInfoForCompiler(compiler);
-      final sourceDirUri = packageInfo.uri;
-      final targetDirUri =
-          context.buildPackagesDirectory.uri.resolve("${packageInfo.name}/");
-
-      print("Compiling package '${packageInfo.name}'...");
-      copyPackage(sourceDirUri, targetDirUri);
-      compiler.deflectPackage(Directory.fromUri(targetDirUri));
-
-      if (packageInfo.name != nameOfPackageBeingCompiled) {
-        overrides[packageInfo.name] = {
-          "path": targetDirUri.toFilePath(windows: Platform.isWindows)
-        };
-      } else {
-        sourcePackageIsCompiled = true;
-      }
-      print("Package '${packageInfo.name} compiled to '$targetDirUri'.");
-    }
 
     final appDst = context.buildApplicationDirectory.uri;
     if (!sourcePackageIsCompiled) {
@@ -151,36 +132,4 @@ class Build {
     context.getFile(srcUri.resolve("pubspec.yaml")).copySync(
         dstUri.resolve("pubspec.yaml").toFilePath(windows: Platform.isWindows));
   }
-
-  _PackageInfo _getPackageInfoForName(String packageName) {
-    final packageUri = packageMap[packageName];
-    if (packageUri == null) {
-      throw StateError(
-          'Package "$packageName" not found in package map. Make sure it is in dependencies and run "pub get".');
-    }
-
-    return _PackageInfo(packageName, packageUri);
-  }
-
-  _PackageInfo _getPackageInfoForCompiler(Compiler compiler) {
-    final compilerUri = reflect(compiler).type.location!.sourceUri;
-    final parser = RegExp(r"package\:([^\/]+)");
-    final parsed = parser.firstMatch(compilerUri.toString());
-    if (parsed == null) {
-      throw StateError(
-        "Could not identify package of Compiler '${compiler.runtimeType}' "
-        "(from URI '$compilerUri').",
-      );
-    }
-
-    final packageName = parsed.group(1);
-    return _getPackageInfoForName(packageName!);
-  }
-}
-
-class _PackageInfo {
-  _PackageInfo(this.name, this.uri);
-
-  final String name;
-  final Uri uri;
 }

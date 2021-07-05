@@ -142,7 +142,7 @@ class InPackage extends Executable<Map<String, String>> {
       namedArguments: {#id: "namedArgs"},
     );
     final SomeObjectBaseClass con =
-        instanceOf("NamedConstructorObject", constructorName: #fromID)
+        instanceOf("NamedConstructorObject", constructorName: 'fromID')
             as SomeObjectBaseClass;
     return {"def": def.id, "pos": pos.id, "nam": nam.id, "con": con.id};
   }

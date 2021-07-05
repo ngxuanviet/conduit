@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:isolate';
-import 'dart:mirrors';
+import 'package:reflectable/reflectable.dart';
+
+import '../conduit_isolate_exec.dart';
 
 abstract class Executable<T extends Object?> {
   Executable(this.message) : _sendPort = message["_sendPort"];
@@ -14,33 +16,25 @@ abstract class Executable<T extends Object?> {
     String typeName, {
     List positionalArguments = const [],
     Map<Symbol, dynamic> namedArguments = const {},
-    Symbol constructorName = const Symbol(""),
+    String constructorName = "",
   }) {
-    ClassMirror? typeMirror = currentMirrorSystem()
-        .isolate
-        .rootLibrary
-        .declarations[Symbol(typeName)] as ClassMirror?;
+    ClassMirror? typeMirror = isolateReflector
+        .libraries[0]!.declarations[Symbol(typeName)] as ClassMirror?;
 
-    typeMirror ??= currentMirrorSystem()
-        .libraries
-        .values
+    typeMirror ??= isolateReflector.libraries.values
         .where((lib) => lib.uri.scheme == "package" || lib.uri.scheme == "file")
         .expand((lib) => lib.declarations.values)
         .firstWhere(
-          (decl) =>
-              decl is ClassMirror &&
-              MirrorSystem.getName(decl.simpleName) == typeName,
+          (decl) => decl is ClassMirror && decl.simpleName == typeName,
           orElse: () => throw ArgumentError(
               "Unknown type '$typeName'. Did you forget to import it?"),
         ) as ClassMirror?;
 
-    return typeMirror!
-        .newInstance(
-          constructorName,
-          positionalArguments,
-          namedArguments,
-        )
-        .reflectee as U;
+    return typeMirror!.newInstance(
+      constructorName,
+      positionalArguments,
+      namedArguments,
+    ) as U;
   }
 
   void send(dynamic message) {

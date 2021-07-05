@@ -5,6 +5,9 @@ import 'dart:isolate';
 import 'package:conduit_isolate_exec/src/executable.dart';
 import 'package:conduit_isolate_exec/src/source_generator.dart';
 
+import '../conduit_isolate_exec.dart';
+
+@isolateReflector
 class IsolateExecutor<U> {
   IsolateExecutor(
     this.generator, {

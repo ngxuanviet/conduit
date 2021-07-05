@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:mirrors';
 import 'package:path/path.dart';
 
 import 'package:analyzer/dart/ast/ast.dart';
@@ -8,6 +7,8 @@ import 'package:conduit_runtime/src/analyzer.dart';
 import 'package:conduit_runtime/src/context.dart';
 import 'package:conduit_runtime/src/file_system.dart';
 import 'package:conduit_runtime/src/mirror_context.dart';
+import 'package:reflectable/reflectable.dart';
+import '../runtime.dart';
 import 'package:yaml/yaml.dart';
 
 /// Configuration and context values used during [Build.execute].
@@ -191,15 +192,15 @@ class BuildContext {
   }
 
   ClassDeclaration getClassDeclarationFromType(Type type) {
-    final classMirror = reflectType(type);
+    final classMirror = runtimeReflector.reflectType(type);
     return analyzer.getClassFromFile(
-      MirrorSystem.getName(classMirror.simpleName),
-      resolveUri(classMirror.location!.sourceUri)!,
+      classMirror.simpleName,
+      resolveUri(classMirror.location.sourceUri)!,
     );
   }
 
   List<Annotation> getAnnotationsFromField(Type _type, String propertyName) {
-    var type = reflectClass(_type);
+    var type = runtimeReflector.reflectType(_type) as ClassMirror;
     var field =
         getClassDeclarationFromType(type.reflectedType).getField(propertyName);
     while (field == null) {

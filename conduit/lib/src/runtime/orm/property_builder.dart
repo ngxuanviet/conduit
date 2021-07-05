@@ -1,5 +1,3 @@
-import 'dart:mirrors';
-
 import 'package:conduit/src/db/managed/managed.dart';
 import 'package:conduit/src/db/managed/relationship_type.dart';
 import 'package:conduit/src/runtime/orm/data_model_compiler.dart';
