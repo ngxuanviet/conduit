@@ -3,11 +3,11 @@
 ///
 library conduit_isolate_exec;
 
-export 'src/executable.dart';
-export 'src/executor.dart';
-export 'src/source_generator.dart';
-
 import 'package:reflectable/reflectable.dart';
+
+export 'src/executable.dart';
+export 'src/executor.dart' hide sourceName;
+export 'src/source_generator.dart' hide sourceName;
 
 class IsolateReflector extends Reflectable {
   const IsolateReflector()

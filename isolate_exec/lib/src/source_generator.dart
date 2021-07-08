@@ -9,10 +9,14 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/file_system/file_system.dart';
 import 'package:analyzer/file_system/physical_file_system.dart';
 import 'package:conduit_isolate_exec/src/executable.dart';
+import 'package:path/path.dart';
 
 import '../conduit_isolate_exec.dart';
 
+const sourceName = '../isolate_exec/lib/src/source_generator.dart';
+
 @isolateReflector
+@sourceName
 class SourceGenerator {
   SourceGenerator(
     this.executableType, {
@@ -63,15 +67,20 @@ Future main (List<String> args, Map<String, dynamic> message) async {
   }
 
   static Future<ClassDeclaration> _getClass(Type type) async {
-    final uri = await Isolate.resolvePackageUri(
-        isolateReflector.reflectType(type).location.sourceUri);
-    final path = uri!.toFilePath(windows: Platform.isWindows);
+    print(type);
+    print(Directory.current.path);
+    print(isolateReflector.reflectType(type).metadata);
+    final uri = Uri.parse(join(Directory.current.path,
+        isolateReflector.reflectType(type).metadata.last as String));
+    final path = uri.toFilePath(windows: Platform.isWindows);
 
     final context = _createContext(path);
     final session = context.currentSession;
     final unit = session.getParsedUnit2(path) as ParsedUnitResult;
     final typeName = isolateReflector.reflectType(type).simpleName;
 
+    print(unit.unit.declarations);
+    print(typeName);
     return unit.unit.declarations
         .whereType<ClassDeclaration>()
         .firstWhere((classDecl) => classDecl.name.name == typeName);

@@ -7,7 +7,10 @@ import 'package:conduit_isolate_exec/src/source_generator.dart';
 
 import '../conduit_isolate_exec.dart';
 
+const sourceName = '../isolate_exec/lib/src/executor.dart';
+
 @isolateReflector
+@sourceName
 class IsolateExecutor<U> {
   IsolateExecutor(
     this.generator, {

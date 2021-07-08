@@ -8,7 +8,10 @@ import 'package:conduit_runtime/runtime.dart';
 
 import 'build_context.dart';
 
+const sourceName = '../runtime/lib/src/build_manager.dart';
+
 @isolateReflector
+@sourceName
 class BuildExecutable extends Executable<Null> {
   BuildExecutable(Map<String, dynamic> message) : super(message) {
     context = BuildContext.fromMap(message);

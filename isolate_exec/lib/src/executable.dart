@@ -4,6 +4,10 @@ import 'package:reflectable/reflectable.dart';
 
 import '../conduit_isolate_exec.dart';
 
+const sourceName = '../isolate_exec/lib/src/executable.dart';
+
+@isolateReflector
+@sourceName
 abstract class Executable<T extends Object?> {
   Executable(this.message) : _sendPort = message["_sendPort"];
 
