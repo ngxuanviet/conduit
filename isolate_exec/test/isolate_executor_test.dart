@@ -1,4 +1,4 @@
-@Timeout(Duration(minutes: 3))
+@Timeout(Duration(minutes: 5))
 import 'dart:async';
 import 'dart:io';
 
@@ -79,7 +79,6 @@ void main() {
     final result = await IsolateExecutor.run(AdditionalContentsInstantiator({}),
         packageConfigURI: Uri.file(join(projDir, ".packages")),
         additionalContents: """
-const sourceName = '$sourceName';
 @isolateReflector
 @sourceName
 class AdditionalContents { int get id => 10; }

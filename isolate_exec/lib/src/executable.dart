@@ -25,24 +25,17 @@ abstract class Executable<T extends Object?> {
     ClassMirror? typeMirror = isolateReflector
         .libraries[0]?.declarations[Symbol(typeName)] as ClassMirror?;
 
-    print('odososos');
-    for (var element in isolateReflector.libraries.values) {
-      print(element.declarations);
-    }
     typeMirror ??= isolateReflector.libraries.values
-        .where((lib) => lib.uri.scheme == "package" || lib.uri.scheme == "file")
+        .where((lib) =>
+            lib.uri.scheme == "package" ||
+            lib.uri.scheme == "file" ||
+            lib.uri.scheme == "reflectable")
         .expand((lib) => lib.declarations.values)
         .firstWhere(
-      (decl) {
-        print('oiajsdoijasodij');
-        print(decl is ClassMirror);
-        print(decl.simpleName);
-        print(typeName);
-        return decl is ClassMirror && decl.simpleName == typeName;
-      },
-      orElse: () => throw ArgumentError(
-          "Unknown type '$typeName'. Did you forget to import it?"),
-    ) as ClassMirror?;
+          (decl) => decl is ClassMirror && decl.simpleName == typeName,
+          orElse: () => throw ArgumentError(
+              "Unknown type '$typeName'. Did you forget to import it?"),
+        ) as ClassMirror?;
 
     return typeMirror!.newInstance(
       constructorName,
