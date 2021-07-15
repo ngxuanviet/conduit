@@ -9,7 +9,7 @@ const sourceName = '../isolate_exec/lib/src/executable.dart';
 @isolateReflector
 @sourceName
 abstract class Executable<T extends Object?> {
-  Executable(this.message) : _sendPort = message["_sendPort"];
+  Executable(this.message) : _sendPort = message["_sendPort"] as SendPort?;
 
   Future<T> execute();
 
@@ -23,16 +23,26 @@ abstract class Executable<T extends Object?> {
     String constructorName = "",
   }) {
     ClassMirror? typeMirror = isolateReflector
-        .libraries[0]!.declarations[Symbol(typeName)] as ClassMirror?;
+        .libraries[0]?.declarations[Symbol(typeName)] as ClassMirror?;
 
+    print('odososos');
+    for (var element in isolateReflector.libraries.values) {
+      print(element.declarations);
+    }
     typeMirror ??= isolateReflector.libraries.values
         .where((lib) => lib.uri.scheme == "package" || lib.uri.scheme == "file")
         .expand((lib) => lib.declarations.values)
         .firstWhere(
-          (decl) => decl is ClassMirror && decl.simpleName == typeName,
-          orElse: () => throw ArgumentError(
-              "Unknown type '$typeName'. Did you forget to import it?"),
-        ) as ClassMirror?;
+      (decl) {
+        print('oiajsdoijasodij');
+        print(decl is ClassMirror);
+        print(decl.simpleName);
+        print(typeName);
+        return decl is ClassMirror && decl.simpleName == typeName;
+      },
+      orElse: () => throw ArgumentError(
+          "Unknown type '$typeName'. Did you forget to import it?"),
+    ) as ClassMirror?;
 
     return typeMirror!.newInstance(
       constructorName,

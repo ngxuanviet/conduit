@@ -9,6 +9,10 @@ export 'src/executable.dart';
 export 'src/executor.dart' hide sourceName;
 export 'src/source_generator.dart' hide sourceName;
 
+const sourceName = '../isolate_exec/lib/conduit_isolate_exec.dart';
+
+@isolateReflector
+@sourceName
 class IsolateReflector extends Reflectable {
   const IsolateReflector()
       : super(

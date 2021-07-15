@@ -5,6 +5,7 @@ import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 import 'package:conduit_runtime/runtime.dart';
+import 'package:path/path.dart';
 
 import 'build_context.dart';
 
@@ -67,6 +68,8 @@ class BuildManager {
         context.targetScriptFileUri.toString()
       ],
       logHandler: (s) => print(s), //ignore: avoid_print
+      targetDirectory:
+          File.fromUri(context.rootLibraryFileUri).parent.parent.path,
     );
   }
 

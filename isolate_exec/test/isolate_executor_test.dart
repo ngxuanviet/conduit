@@ -1,11 +1,15 @@
+@Timeout(Duration(minutes: 3))
 import 'dart:async';
 import 'dart:io';
 
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 import 'package:path/path.dart';
 import 'package:test/test.dart';
+import 'isolate_executor_test.reflectable.dart';
 
+const sourceName = 'test/isolate_executor_test.dart';
 void main() {
+  initializeReflectable();
   final projDir = join('..', 'isolate_exec_test_package');
 
   setUpAll(() async {
@@ -35,7 +39,8 @@ void main() {
   test("Run from another package", () async {
     final result = await IsolateExecutor.run(InPackage({}),
         packageConfigURI: Uri.file(join(projDir, ".packages")),
-        imports: ["package:test_package/lib.dart"]);
+        imports: ["package:test_package/lib.dart"],
+        targetDirectory: '../isolate_exec_test_package');
 
     expect(result, {
       "def": "default",
@@ -74,6 +79,9 @@ void main() {
     final result = await IsolateExecutor.run(AdditionalContentsInstantiator({}),
         packageConfigURI: Uri.file(join(projDir, ".packages")),
         additionalContents: """
+const sourceName = '$sourceName';
+@isolateReflector
+@sourceName
 class AdditionalContents { int get id => 10; }
     """);
 
@@ -96,6 +104,8 @@ class AdditionalContents { int get id => 10; }
   });
 }
 
+@isolateReflector
+@sourceName
 class SimpleReturner extends Executable {
   SimpleReturner(Map<String, dynamic> message) : super(message);
 
@@ -106,6 +116,8 @@ class SimpleReturner extends Executable {
   }
 }
 
+@isolateReflector
+@sourceName
 class Echo extends Executable<String> {
   Echo(Map<String, dynamic> message)
       : echoMessage = message['echo']!.toString(),
@@ -119,10 +131,14 @@ class Echo extends Executable<String> {
   }
 }
 
+@isolateReflector
+@sourceName
 abstract class SomeObjectBaseClass {
   String get id;
 }
 
+@isolateReflector
+@sourceName
 class InPackage extends Executable<Map<String, String>> {
   InPackage(Map<String, dynamic> message) : super(message);
 
@@ -148,6 +164,8 @@ class InPackage extends Executable<Map<String, String>> {
   }
 }
 
+@isolateReflector
+@sourceName
 class Streamer extends Executable {
   Streamer(Map<String, dynamic> message) : super(message);
 
@@ -160,6 +178,8 @@ class Streamer extends Executable {
   }
 }
 
+@isolateReflector
+@sourceName
 class Thrower extends Executable {
   Thrower(Map<String, dynamic> message) : super(message);
 
@@ -169,6 +189,8 @@ class Thrower extends Executable {
   }
 }
 
+@isolateReflector
+@sourceName
 class AdditionalContentsInstantiator extends Executable {
   AdditionalContentsInstantiator(Map<String, dynamic> message) : super(message);
 

@@ -4,7 +4,6 @@ import 'dart:isolate';
 
 import 'package:conduit_isolate_exec/src/executable.dart';
 import 'package:conduit_isolate_exec/src/source_generator.dart';
-
 import '../conduit_isolate_exec.dart';
 
 const sourceName = '../isolate_exec/lib/src/executor.dart';
@@ -107,12 +106,14 @@ class IsolateExecutor<U> {
     List<Type> additionalTypes = const [],
     void Function(dynamic event)? eventHandler,
     void Function(String line)? logHandler,
+    String? targetDirectory,
   }) async {
     final source = SourceGenerator(
       executable.runtimeType,
       imports: imports,
       additionalContents: additionalContents,
       additionalTypes: additionalTypes,
+      targetDirectory: targetDirectory,
     );
 
     final executor = IsolateExecutor<T>(
