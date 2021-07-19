@@ -3,8 +3,8 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:conduit_isolate_exec/src/executable.dart';
+import 'package:conduit_isolate_exec/src/reflector.dart';
 import 'package:conduit_isolate_exec/src/source_generator.dart';
-import '../conduit_isolate_exec.dart';
 
 const sourceName = '../isolate_exec/lib/src/executor.dart';
 
@@ -71,6 +71,7 @@ class IsolateExecutor<U> {
       final dataUri = Uri.parse(
         "data:application/dart;charset=utf-8,$scriptSource",
       );
+
       if (packageConfigURI != null) {
         await Isolate.spawnUri(
           dataUri,

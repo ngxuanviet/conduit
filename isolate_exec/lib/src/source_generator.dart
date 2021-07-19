@@ -8,8 +8,8 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/file_system/file_system.dart' hide File;
 import 'package:analyzer/file_system/physical_file_system.dart';
 import 'package:conduit_isolate_exec/src/executable.dart';
+import 'package:conduit_isolate_exec/src/reflector.dart';
 import 'package:path/path.dart';
-import 'package:reflectable/reflectable_builder.dart';
 
 import '../conduit_isolate_exec.dart';
 
@@ -40,6 +40,7 @@ class SourceGenerator {
     final builder = StringBuffer();
     final importsBuffer = StringBuffer();
 
+    importsBuffer.writeln("// @dart = 2.12");
     for (final anImport in imports) {
       if (anImport.startsWith('file')) {
         continue;
@@ -64,8 +65,6 @@ Future main (List<String> args, Map<String, dynamic> message) async {
     builder.writeln(typeSource);
     builder.writeln((await _getClass(Executable)).toSource());
 
-    // builder.writeln((await _getClass(IsolateReflector)).toSource());
-    // builder.writeln("const isolateReflector = IsolateReflector();");
     builder.writeln("const sourceName = '';");
 
     for (final type in additionalTypes) {
@@ -77,21 +76,26 @@ Future main (List<String> args, Map<String, dynamic> message) async {
       builder.writeln(additionalContents);
     }
 
-    const tmpFileName = 'source_generator_artifact.dart';
-    final prevDir = Directory.current.path;
-    Directory.current = targetDirectory ?? Directory.current;
-    final tmpFile = File('lib/$tmpFileName');
-    await tmpFile.writeAsString(importsBuffer.toString());
-    await tmpFile.writeAsString(builder.toString(), mode: FileMode.append);
-    importsBuffer.writeln(await _generateReflectorCode(['lib/$tmpFileName']));
+    const artifactName = 'source_generator_artifact';
+    String importsString;
+    try {
+      final tmpFile =
+          File(join(absolute(targetDirectory ?? ''), 'lib/$artifactName.dart'));
+      await tmpFile.writeAsString(importsBuffer.toString() + builder.toString(),
+          mode: FileMode.writeOnly);
 
-    var importsString = importsBuffer.toString();
-    importsString = _removePrefixImport(importsString, tmpFileName);
-    importsString = _findAndRemoveDuplicateImports(importsString);
-    await tmpFile.writeAsString(importsString);
-    await tmpFile.writeAsString(builder.toString(), mode: FileMode.append);
+      runBuildRunner(targetDirectory: targetDirectory);
 
-    Directory.current = prevDir;
+      final reflectableArtifact = File(join(absolute(targetDirectory ?? ''),
+          'lib/$artifactName.reflectable.dart'));
+
+      importsString =
+          importsBuffer.toString() + await reflectableArtifact.readAsString();
+      importsString = _removePrefixImport(importsString, '$artifactName.dart');
+      importsString = _findAndRemoveDuplicateImports(importsString);
+    } catch (e) {
+      throw StateError('Failed to generate source for $targetDirectory: $e');
+    }
     return importsString + builder.toString();
   }
 
@@ -143,7 +147,34 @@ AnalysisContext _createContext(
   return builder.createContext(contextRoot: root.first);
 }
 
-Future<String> _generateReflectorCode(List<String> arguments) async {
-  final results = await reflectableBuild(arguments);
-  return File(results.outputs.first.path).readAsString();
+void _deleteDir(String path) {
+  final current = Directory(path);
+  if (current.existsSync()) {
+    current.deleteSync(recursive: true);
+  }
+}
+
+void runBuildRunner({String? targetDirectory}) {
+  final current = Uri.file(targetDirectory ?? Directory.current.path);
+  _deleteDir(current.resolve('.packages').path);
+  _deleteDir(current.resolve('.dart_tool/').path);
+  String cmd;
+  if (Platform.isWindows) {
+    cmd = (Process.runSync("where", ["pub.bat"])).stdout as String;
+  } else {
+    cmd = (Process.runSync("which", ["pub"])).stdout as String;
+  }
+  cmd = cmd.replaceAll('\n', '');
+  Process.runSync(cmd, ['get', '--no-precompile'],
+      workingDirectory: current.path, runInShell: true);
+  final result = Process.runSync(cmd,
+      ['run', 'build_runner', 'build', '-v', '--delete-conflicting-outputs'],
+      workingDirectory: current.path, runInShell: true);
+  print(result.stdout);
+
+  if (result.exitCode != 0) {
+    print(result.stderr);
+    throw StateError(
+        'Reflectable code generation failed with error: ${result.stderr}');
+  }
 }

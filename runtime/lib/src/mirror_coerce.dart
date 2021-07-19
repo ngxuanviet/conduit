@@ -1,9 +1,7 @@
-import 'package:conduit_runtime/src/exceptions.dart';
 import 'package:reflectable/reflectable.dart';
+import 'exceptions.dart';
+import 'reflector.dart';
 
-import '../runtime.dart';
-
-typedef StringMap = Map<String, dynamic>;
 dynamic runtimeCast(dynamic object, Type type) {
   if (type == dynamic || object == null) {
     return object;
@@ -28,7 +26,7 @@ dynamic runtimeCast(dynamic object, Type type) {
       final elements =
           object.map((e) => runtimeCast(e, elementType.reflectedType));
       return (intoType as ClassMirror).newInstance("from", [elements]);
-    } else if (intoType.isSubtypeOf(runtimeReflector.reflectType(StringMap))) {
+    } else if (intoType.isSubtypeOf(runtimeReflector.reflectType(Map))) {
       if (object is! Map<String, dynamic>) {
         throw exceptionToThrow;
       }

@@ -8,7 +8,7 @@ class DependencyCompiler extends Compiler {
   Map<String, dynamic> compile(MirrorContext context) {
     return Map.fromEntries(context.getSubclassesOf(Consumer).map((c) {
       return MapEntry(
-        c.simpleName as String,
+        c.simpleName,
         ConsumerRuntimeImpl(),
       );
     }))
@@ -24,9 +24,11 @@ class ConsumerRuntimeImpl extends ConsumerRuntime implements SourceCompiler {
   @override
   String compile(BuildContext ctx) => """
 import 'package:dependency/dependency.dart';
+import 'package:conduit_runtime/conduit_runtime.dart';
 
 final instance = ConsumerRuntimeImpl();
 
+@runtimeReflector
 class ConsumerRuntimeImpl extends ConsumerRuntime {
   @override
   String get message => "generated";

@@ -4,5 +4,6 @@ targets:
       reflectable:
         generate_for:
           - lib/source_generator_artifact.dart
+          - bin/**.dart
         options:
           formatted: true

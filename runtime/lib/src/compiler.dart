@@ -1,7 +1,6 @@
-import 'dart:io';
-
-import 'package:conduit_runtime/runtime.dart';
-import 'package:conduit_runtime/src/mirror_context.dart';
+import 'build_context.dart';
+import 'mirror_context.dart';
+import 'reflector.dart';
 
 @runtimeReflector
 abstract class Compiler {
@@ -14,6 +13,7 @@ abstract class Compiler {
 }
 
 /// Runtimes that generate source code implement this method.
+@runtimeReflector
 abstract class SourceCompiler {
   /// The source code, including directives, that declare a class that is equivalent in behavior to this runtime.
   String compile(BuildContext ctx);
