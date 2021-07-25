@@ -1,4 +1,4 @@
-# 3. Storing Data in a Database
+# Storing Data in a Database
 
 In the previous exercise, we loaded some heroes into the database our application reads from. Now, we will allow our application to store, delete and modify heroes in the database. Before we embark on this part of the journey, it's important that we understand how an HTTP API is intended to work.
 
@@ -156,6 +156,4 @@ Re-run your `heroes` application. On [http://conduit-tutorial.conduit.dart.io](h
 ![Conduit Tutorial Third Run](../.gitbook/assets/run3%20%281%29%20%281%29.png)
 
 !!! tip "Query Construction" Properties like `values` and `where` prevent errors by type and name checking columns with the analyzer. They're also great for speeding up writing code because your IDE will autocomplete property names. There is [specific behavior](../db/advanced_queries.md) a query uses to decide whether it should include a value from these two properties in the SQL it generates.
-
-## [Next Chapter: Writing Tests](writing-tests.md)
 

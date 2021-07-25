@@ -1,4 +1,4 @@
-# 1. Getting Started
+# Getting Started
 
 By the end of this tutorial, you will have created a Conduit application that serves fictional heroes from a PostgreSQL database. You will learn the following:
 
@@ -8,23 +8,15 @@ By the end of this tutorial, you will have created a Conduit application that se
 * Write automated tests for each endpoint
 * Require authorization for HTTP requests
 
-!!! tip "Getting Help" If at anytime you get stuck, hop on over to the [Conduit Slack channel](http://slackconduitsignup.herokuapp.com). You can also see a finished version of this application [here](https://github.com/conduit.dart/conduit_examples/tree/master/heroes).
-
 ## Installation
 
-To get started, make sure you have the following software installed:
-
-1. Dart \([Install Instructions](https://www.dartlang.org/install)\)
-2. IntelliJ IDEA or any other Jetbrains IDE, including the free Community Edition \([Install Instructions](https://www.jetbrains.com/idea/download/)\)
-3. The IntelliJ IDEA Dart Plugin \([Install Instructions](https://www.dartlang.org/tools/jetbrains-plugin)\)
+Make sure that your system has the latest stable version of dart installed. Find the version suited for your operating system here: [https://dart.dev/get-dart](https://dart.dev/get-dart)
 
 Install the `conduit` command line tool by running the following command in your shell:
 
 ```text
 pub global activate conduit
 ```
-
-!!! warning "" If you get warning text about your `PATH`, make sure to read it before moving on.
 
 ## Creating a Project
 
@@ -34,9 +26,7 @@ Create a new project named `heroes` by entering the following in your shell:
 conduit create heroes
 ```
 
-This creates a `heroes` project directory. Open this directory with IntelliJ IDEA by dragging the project folder onto IntellIJ IDEA's icon.
-
-In IntelliJ's project view, locate the `lib` directory; this is where your project's code will go. This project has two source files - `heroes.dart` and `channel.dart`. Open the file `heroes.dart`. Click `Enable Dart Support` in the top right corner of the editor.
+This creates a `heroes` project directory with a default server implementation populating it.
 
 ## Handling HTTP Requests
 
@@ -148,7 +138,7 @@ This will start your application running locally. Reload the browser page `http:
 
 #### Screenshot of Heroes Application
 
-![Conduit Heroes First Run](../.gitbook/assets/run1%20%281%29%20%281%29.png)
+![Conduit Heroes First Run](../.gitbook/assets/run1%20%281%29.png)
 
 You can also see the actual response of your request by entering the following into your shell:
 
@@ -325,6 +315,4 @@ When you run a Conduit application, it creates multiple threads. Each of these t
 An instance of your application channel is created for each isolate. Each HTTP request is given to just one of the isolates to be handled. In a sense, your one application behaves the same as running your application on multiple servers behind a load balancer. \(It also makes your application substantially faster.\)
 
 If you are storing any data in your application, you'll find out really quickly. Why? A request that changes data will only change that data in one of your application's isolates. When you make a request to get that data again, its unlikely that you'll see the changes - another isolate with different data will probably handle that request.
-
-## [Next Chapter: Reading from a Database](executing-queries.md)
 

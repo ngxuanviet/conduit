@@ -1,19 +1,8 @@
-# Deploying a Conduit Application on a Local Machine
+# Deploy on a Local Machine
 
-For other deployment options, see [Deploying Conduit Applications](deploy_local.md).
+## Before You Begin
 
-## Purpose
-
-To run a local development version of a Conduit application with persistent storage. This is useful when developing client applications with a Conduit application. Make sure to also read [Testing Conduit Applications](deploy_local.md).
-
-## Prerequisites
-
-1. [Dart has been installed.](https://www.dartlang.org/install)
-2. [PostgreSQL has been installed locally.](../getting_started.md)
-3. [Conduit has been activated globally.](../getting_started.md)
-4. [An application has been created with `conduit create`.](../getting_started.md)
-
-If one or more of these is not true, see [Getting Started](../getting_started.md).
+This guide requires that you have created a Conduit project. If not, please refer to the first part of the [Tutorial](../tut/getting-started.md).
 
 ## Overview
 
@@ -22,8 +11,6 @@ If one or more of these is not true, see [Getting Started](../getting_started.md
 3. Add an OAuth 2.0 client.
 4. Modify the configuration file.
 5. Run the application.
-
-Estimated Time: 5 minutes.
 
 ## Step 1: Create a Local Database
 

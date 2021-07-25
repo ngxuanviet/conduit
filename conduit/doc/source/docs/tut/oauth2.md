@@ -1,4 +1,4 @@
-# 5. Adding Authentication and Authorization with OAuth 2.0
+# Authentication and Authorization with OAuth 2.0
 
 Our `heroes` application lets anyone create or view the same set of heroes. We will continue to build on the last chapter's project, `heroes`, requiring a user to log in before viewing or creating heroes.
 
@@ -11,8 +11,6 @@ Our `heroes` application lets anyone create or view the same set of heroes. We w
 In a simple authentication and authorization scheme, each HTTP request contains the username and password \(credentials\) of the user in an `Authorization` header. There are a number of security risks involved in doing this, so OAuth 2.0 takes another approach: you send your credentials once, and get a 'access token' in return. You then send this access token in each request. Because the server grants the token, it knows that you've already entered your credentials \(you've _authenticated_\) and it remembers who the token belongs to. It's effectively the same thing as sending your credentials each time, except that the token has a time limit and can be revoked when things go wrong.
 
 Conduit has a built-in OAuth 2.0 implementation that leverages the ORM. This implementation is part of the `conduit` package, but it is a separate library named `conduit/managed_auth`. It takes a few steps to set up that might be difficult to understand if you are not familiar with OAuth 2.0, but you'll get a well-tested, secure authorization implementation.
-
-!!! note "Alternative Implementations" Using `package:conduit/managed_auth` is preferable in most cases. In some cases, you may wish to store authorization information in different database system or use token formats like [JWT](https://jwt.io). This is a complex topic that requires significant testing efforts, and is outside the scope of this tutorial.
 
 ## Setting up OAuth 2.0: Creating a User Type
 

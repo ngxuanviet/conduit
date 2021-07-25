@@ -8,7 +8,5 @@ Conduit applications can be run anywhere that Dart can be installed. This topic 
 
 * [Running a Conduit Application Locally](deploy_local.md)
 * [Running a Conduit Application with Docker, Docker Compose and Kubernetes](deploy_docker.md)
-* [Running a Conduit Application on Heroku](deploy_heroku.md)
-* [Running a Conduit Application on Amazon Web Services \(AWS\)](deploy_aws.md)
 * [Running a Conduit Application without conduit serve](script.md)
 

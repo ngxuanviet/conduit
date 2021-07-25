@@ -6,13 +6,6 @@ import 'package:conduit/src/cli/metadata.dart';
 import 'package:conduit/src/cli/mixins/project.dart';
 
 class CLISetup extends CLICommand with CLIProject {
-  bool get shouldSetupHeroku => herokuName != null;
-
-  @Option("heroku",
-      help:
-          "DEPRECATED. Please see https://conduit.io/docs/deploy/deploy_heroku/.")
-  String? get herokuName => decodeOptional("heroku");
-
   @Flag("tests",
       help:
           "Sets up a local database to run application tests. If no other option is on, the command defaults to this flag.",
@@ -35,14 +28,7 @@ class CLISetup extends CLICommand with CLIProject {
 
   @override
   Future<int> handle() async {
-    if (shouldSetupHeroku) {
-      displayInfo("This option has been deprecated.");
-      displayProgress(
-          "Please see https://conduit.io/docs/deploy/deploy_heroku/ for instructions.");
-      return 0;
-    } else /*if (shouldSetupTests*/ {
-      return setupTestEnvironment();
-    }
+    return setupTestEnvironment();
   }
 
   bool get hasPSQLCLI => isExecutableInShellPath("psql");

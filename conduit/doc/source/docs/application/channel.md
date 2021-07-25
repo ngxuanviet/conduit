@@ -79,7 +79,7 @@ Some of the information needed to configure an application will come from a conf
 
 Conduit applications can - and should - be spread across a number of threads. This allows an application to take advantage of multiple CPUs and serve requests faster. In Dart, threads are called _isolates_. An instance of your `ApplicationChannel` is created for each isolate. When your application receives an HTTP request, the request is passed to one of these instances' entry points. These instances are replicas of one another and it doesn't matter which instance processes the request. This isolate-channel architecture is very similar to running multiple servers that run the same application.
 
-The number of isolates an application will use is configurable at startup when using the [conduit serve](../cli/running.md) command.
+The number of isolates an application will use is configurable at startup when using the [conduit serve]() command.
 
 An isolate can't share memory with another isolate. If an object is created on one isolate, it _cannot_ be referenced by another. Therefore, each `ApplicationChannel` instance has its own set of services that are configured in the same way. This behavior also makes design patterns like connection pooling implicit; instead of a pool of database connections, there is a pool of application channels that each have their own database connection.
 

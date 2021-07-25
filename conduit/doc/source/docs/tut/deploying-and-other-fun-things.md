@@ -1,4 +1,4 @@
-# 6. Deploying a Conduit Application
+# Deploying a Conduit Application
 
 The last chapter is a quick one - we'll get our application and its database running locally. When writing tests, the harness creates temporary tables that are destroyed when the tests end. Those tables are created in a database named `dart_test` that is exclusively used for this purpose. All of your projects will use this same database for running tests.
 
@@ -69,19 +69,15 @@ database:
  databaseName: quiz
 ```
 
-Run `conduit serve` and open a browser to `http://localhost:8888/questions` - you'll see the question in your database. For other ways of running a Conduit application \(and tips for running them remotely\), see [this guide](deploying-and-other-fun-things.md).
+Run `conduit serve` and open a browser to `http://localhost:8888/questions` - you'll see the question in your database. For other ways of running a Conduit application \(and tips for running them remotely\), take a look at the Deploy Conduit seciton of the docs.
 
-!!! tip "Test and Deployment Configuration" The `configurationFilePath` defaults to `config.yaml` when using `conduit serve`. In the test harness, the `configurationFilePath` is set to `config.src.yaml`. To continue running the tests, add the database connection configuration for `dart_test` database to the file `config.src.yaml`. For more details on configuration, see [this guide](https://github.com/noojee/conduit/tree/3f4c01be85b7ff135772166173524e76a5f80c32/conduit/doc/source/source/docs/http/configure.md).
+ The `configurationFilePath` defaults to `config.yaml` when using `conduit serve`. In the test harness, the `configurationFilePath` is set to `config.src.yaml`. To continue running the tests, add the database connection configuration for `dart_test` database to the file `config.src.yaml`.
 
 ## Onward
 
 We've only touched on a small part of Conduit, but we've hit the fundamentals pretty well. The rest of the guides on this site will take you deeper on these topics, and topics we haven't covered like OAuth 2.0.
 
 It's very important that you get comfortable using the [API reference](https://pub.dev/documentation/conduit/latest/) in addition to these guides. If you are looking to solve a problem, start by looking at the API reference for all of the objects you have access to \(including the type you are writing the method for\). The properties and methods you have access to will lead you to more properties and methods that'll eventually do what you want done.
-
-Users of the documentation viewer [Dash](https://kapeli.com/dash) can add Conduit through the `Preferences` pane, under `Downloads`.
-
-There are IntelliJ IDEA file and code templates available for Conduit. See [this guide](../intellij.md) for installation instructions and usage. It takes 10 seconds and it'll save you a ton of time overall.
 
 And lastly, remember to create a new project:
 

@@ -1,4 +1,4 @@
-# Deploying a Conduit Application using Docker
+# Deploying on Docker
 
 For other deployment options, see [Deploying Conduit Applications](deploy_docker.md).
 

@@ -1,39 +1,39 @@
-# 3.0.11
+## 3.0.11
 remove dcli dependency for conduit and dependencies
 
-# 3.0.10
+## 3.0.10
 fix for non-path create cli
 
-# 3.0.9
+## 3.0.9
 
-# 3.0.8
+## 3.0.8
 
-# 3.0.7
+## 3.0.7
 uptick version for multi release
 
-# 3.0.5
+## 3.0.5
 Stable Release
 
-# 2.0.0-b9
+## 2.0.0-b9
 Fixed a bug with the conduit build command. We had left in dep overrides 
 which should only be used for conduit internal dev.
 
 
-# 2.0.0-b8
+## 2.0.0-b8
 3rd attempt at first release.
 
-# Conduit
+## Conduit
 
-# 2.0.0-b2
+## 2.0.0-b2
 
 - Stabilize with dependency changes
 - Add ssl capabilities
 
-# 2.0.0-b1
+## 2.0.0-b1
 
 - Tooling tests pass
 
-# 2.0.0-a3
+## 2.0.0-a3
 - Docs published
 - Unit tests passed
 
@@ -50,7 +50,7 @@ which should only be used for conduit internal dev.
 
 - You can no longer set Query.values to null, instead use Query.clearValues().
 
-# Conduit
+# Aqueduct
 
 ## 3.3.0-b1
 

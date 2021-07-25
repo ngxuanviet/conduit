@@ -30,4 +30,4 @@ conduit/tool/.settings.yaml
 stackoverflow
 **/.failed_tracker
 
-**.reflectable.dart
+*.reflectable.dart
