@@ -1,7 +1,7 @@
 // ignore: unnecessary_const
 @Tags(const ["cli"])
 import 'dart:async';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:conduit/conduit.dart';
 import 'package:conduit/src/cli/command.dart';

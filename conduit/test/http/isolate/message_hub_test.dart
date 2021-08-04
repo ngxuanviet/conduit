@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit/conduit.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
+import 'package:universal_io/io.dart';
 
 void main() {
   group("Happy path", () {

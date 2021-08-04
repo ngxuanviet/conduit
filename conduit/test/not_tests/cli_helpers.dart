@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:conduit/src/cli/runner.dart';
 import 'package:conduit/src/cli/running_process.dart';

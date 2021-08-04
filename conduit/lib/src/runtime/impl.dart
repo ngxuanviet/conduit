@@ -14,7 +14,7 @@ import 'package:conduit_open_api/v3.dart';
 import 'package:conduit_runtime/runtime.dart';
 import 'package:reflectable/reflectable.dart';
 
-class ChannelRuntimeImpl extends ChannelRuntime implements SourceCompiler {
+class ChannelRuntimeImpl extends ChannelRuntime {
   ChannelRuntimeImpl(this.type);
 
   final ClassMirror? type;
@@ -64,73 +64,13 @@ class ChannelRuntimeImpl extends ChannelRuntime implements SourceCompiler {
           as APIComponentDocumenter?;
     }).where((o) => o != null);
   }
-
-  @override
-  String compile(BuildContext ctx) {
-    final className = type!.simpleName;
-    final originalFileUri = type!.location.sourceUri.toString();
-    final globalInitBody = hasGlobalInitializationMethod
-        ? "await $className.initializeApplication(config);"
-        : "";
-
-    return """
-import 'dart:async';    
-import 'package:conduit/conduit.dart';
-import 'package:conduit/src/application/isolate_application_server.dart';
-import 'package:conduit_common/conduit_common.dart';
-
-import '$originalFileUri';
-
-final instance = ChannelRuntimeImpl();
-
-void entryPoint(ApplicationInitialServerMessage params) {
-  final runtime = ChannelRuntimeImpl();
-  
-  final server = ApplicationIsolateServer(runtime.channelType,
-    params.configuration, params.identifier, params.parentMessagePort,
-    logToConsole: params.logToConsole);
-
-  server.start(shareHttpServer: true);
-}
-
-class ChannelRuntimeImpl extends ChannelRuntime {
-  @override
-  String get name => '$className';
-
-  @override
-  IsolateEntryFunction get isolateEntryPoint => entryPoint;
-  
-  @override
-  Uri get libraryUri => Uri();
-
-  @override
-  Type get channelType => $className;
-  
-  @override
-  ApplicationChannel instantiateChannel() {
-    return $className();
-  }
-  
-  @override
-  Future runGlobalInitialization(ApplicationOptions config) async {
-    $globalInitBody
-  }
-  
-  @override
-  Iterable<APIComponentDocumenter> getDocumentableChannelComponents(
-      ApplicationChannel channel) { 
-    throw UnsupportedError('This method is not implemented for compiled applications.');
-  }
-}
-    """;
-  }
 }
 
 void isolateServerEntryPoint(ApplicationInitialServerMessage params) {
   final channelSourceLibrary =
       runtimeReflector.libraries[params.streamLibraryURI]!;
-  final channelType = channelSourceLibrary
-      .declarations[Symbol(params.streamTypeName)] as ClassMirror?;
+  final channelType =
+      channelSourceLibrary.declarations[params.streamTypeName] as ClassMirror?;
 
   final runtime = ChannelRuntimeImpl(channelType);
 
@@ -141,8 +81,7 @@ void isolateServerEntryPoint(ApplicationInitialServerMessage params) {
   server.start(shareHttpServer: true);
 }
 
-class ControllerRuntimeImpl extends ControllerRuntime
-    implements SourceCompiler {
+class ControllerRuntimeImpl extends ControllerRuntime {
   ControllerRuntimeImpl(this.type) {
     if (type.isSubclassOf(
         runtimeReflector.reflectType(ResourceController) as ClassMirror)) {
@@ -169,34 +108,6 @@ class ControllerRuntimeImpl extends ControllerRuntime
     final fieldKeys =
         type.instanceMembers.keys.where((sym) => !whitelist.contains(sym));
     return fieldKeys.any((key) => members[key]!.isSetter);
-  }
-
-  @override
-  String compile(BuildContext ctx) {
-    final originalFileUri = type.location.sourceUri.toString();
-
-    return """
-import 'dart:async';    
-import 'package:conduit/conduit.dart';
-import '$originalFileUri';
-${(resourceController as ResourceControllerRuntimeImpl?)?.directives.join("\n") ?? ""}
-    
-final instance = ControllerRuntimeImpl();
-    
-class ControllerRuntimeImpl extends ControllerRuntime {
-  ControllerRuntimeImpl() {
-    ${resourceController == null ? "" : "_resourceController = ResourceControllerRuntimeImpl();"}
-  }
-  
-  @override
-  bool get isMutable => ${isMutable};
-
-  ResourceControllerRuntime get resourceController => _resourceController;
-  late ResourceControllerRuntime _resourceController;
-}
-
-${(resourceController as ResourceControllerRuntimeImpl?)?.compile(ctx) ?? ""}
-    """;
   }
 }
 

@@ -1,7 +1,6 @@
 import 'dart:async';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
-import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:path/path.dart' as path;
 import 'http.dart';
@@ -203,8 +202,9 @@ class FileController extends Controller {
       "get": APIOperation(
           "getFile",
           {
-            "200": APIResponse("Successful file fetch.",
-                content: {"*/*": APIMediaType(schema: APISchemaObject.file())}),
+            "200": APIResponse("Successful file fetch.", content: {
+              "*/*": APIContentType(schema: APISchemaObject.file())
+            }),
             "404": APIResponse("No file exists at path.")
           },
           description: "Content-Type is determined by the suffix of the file.",

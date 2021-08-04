@@ -188,7 +188,7 @@ class APIParameter extends APIObject {
   /// A map containing the representations for the parameter.
   ///
   /// The key is the media type and the value describes it. The map MUST only contain one entry.
-  Map<String, APIMediaType?>? content;
+  Map<String, APIContentType?>? content;
 
   // Currently missing:
   // example, examples
@@ -209,7 +209,7 @@ class APIParameter extends APIObject {
     style = object.decode("style");
     explode = object.decode("explode");
     allowReserved = object.decode("allowReserved");
-    content = object.decodeObjectMap("content", () => APIMediaType());
+    content = object.decodeObjectMap("content", () => APIContentType());
   }
 
   @override

@@ -250,12 +250,12 @@ class DocumentedController extends Controller {
       return {
         "get": APIOperation("get/0", {
           "200": APIResponse("get/0-200", content: {
-            "application/json": APIMediaType(schema: APISchemaObject.string())
+            "application/json": APIContentType(schema: APISchemaObject.string())
           })
         }),
         "post": APIOperation("post/0", {
           "200": APIResponse("post/0-200", content: {
-            "application/json": APIMediaType(schema: APISchemaObject.string())
+            "application/json": APIContentType(schema: APISchemaObject.string())
           })
         })
       };
@@ -264,7 +264,7 @@ class DocumentedController extends Controller {
     return {
       "get": APIOperation("get/1", {
         "200": APIResponse("get/1-200", content: {
-          "application/json": APIMediaType(schema: APISchemaObject.string())
+          "application/json": APIContentType(schema: APISchemaObject.string())
         })
       })
     };

@@ -13,7 +13,7 @@ void main() {
   // not the behavior of creating the appropriate migration file given schemas
   setUp(() async {
     cli = await CLIClient(
-      WorkingDirectoryAgent(DartProjectAgent.projectsDirectory),
+      WorkingDirectoryAgent(DartProjectAgent.projectsDirectory.uri),
     ).createTestProject();
     await cli.agent.getDependencies(offline: true);
     cli.agent.addOrReplaceFile("lib/application_test.dart", """

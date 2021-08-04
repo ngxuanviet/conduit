@@ -154,7 +154,7 @@ void main() {
         () async {
       ctx.document.components!.responses["test"] =
           APIResponse("desc", content: {
-        "application/json": APIMediaType(schema: ctx.schema.getObject("foo"))
+        "application/json": APIContentType(schema: ctx.schema.getObject("foo"))
       });
 
       try {
@@ -179,7 +179,7 @@ void main() {
 
       ctx.document.components!.responses["test"] =
           APIResponse("desc", content: {
-        "application/json": APIMediaType(schema: ctx.schema.getObject("foo"))
+        "application/json": APIContentType(schema: ctx.schema.getObject("foo"))
       });
 
       ctx.schema.register("foo", APISchemaObject.integer());
@@ -631,7 +631,7 @@ class Endpoint extends Controller {
       "post": APIOperation("post0", {"200": APIResponse("post/0-200")},
           requestBody: APIRequestBody({
             "application/json":
-                APIMediaType(schema: registry.schema["someObject"])
+                APIContentType(schema: registry.schema["someObject"])
           }))
     };
   }

@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:conduit/src/cli/command.dart';
 import 'package:conduit/src/cli/metadata.dart';

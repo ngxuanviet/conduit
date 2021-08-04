@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
@@ -156,7 +156,7 @@ class Authorizer extends Controller {
         APIResponse(
             "The provided credentials or bearer token have insufficient permission to access this route.",
             content: {
-              "application/json": APIMediaType(
+              "application/json": APIContentType(
                   schema: APISchemaObject.object({
                 "error": APISchemaObject.string(),
                 "scope": APISchemaObject.string()
@@ -169,7 +169,7 @@ class Authorizer extends Controller {
         APIResponse(
             "The provided credentials or bearer token are not authorized for this request.",
             content: {
-              "application/json": APIMediaType(
+              "application/json": APIContentType(
                   schema: APISchemaObject.object(
                       {"error": APISchemaObject.string()}))
             }));
@@ -178,7 +178,7 @@ class Authorizer extends Controller {
         "MalformedAuthorizationHeader",
         APIResponse("The provided Authorization header was malformed.",
             content: {
-              "application/json": APIMediaType(
+              "application/json": APIContentType(
                   schema: APISchemaObject.object(
                       {"error": APISchemaObject.string()}))
             }));

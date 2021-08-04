@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:conduit/src/cli/command.dart';
 import 'package:conduit/src/cli/mixins/openapi_options.dart';

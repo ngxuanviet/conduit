@@ -12,7 +12,7 @@ dependencies:
   conduit_runtime:
     path: ../../runtime/
   meta: ^1.7.0
-  reflectable: ^3.0.2
+  reflectable: ^3.0.3
 
 dev_dependencies:
   build_runner:

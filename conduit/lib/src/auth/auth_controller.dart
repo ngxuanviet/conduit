@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:conduit/src/http/resource_controller.dart';
 import 'package:conduit/src/http/resource_controller_bindings.dart';

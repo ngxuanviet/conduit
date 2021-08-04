@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:conduit/src/application/service_registry.dart';
 import 'package:conduit_common/conduit_common.dart';

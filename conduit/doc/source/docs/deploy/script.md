@@ -6,7 +6,7 @@ A sample script looks like this:
 
 ```dart
 import 'dart:async';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:conduit/conduit.dart';
 import 'package:my_application/my_application.dart';

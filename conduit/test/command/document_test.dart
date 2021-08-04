@@ -13,8 +13,8 @@ void main() {
 
   setUpAll(() async {
     await CLIClient.activateCLI();
-    final t =
-        CLIClient(WorkingDirectoryAgent(DartProjectAgent.projectsDirectory));
+    final t = CLIClient(
+        WorkingDirectoryAgent(DartProjectAgent.projectsDirectory.uri));
     terminal = await t.createTestProject(template: "db_and_auth");
   });
 

@@ -47,20 +47,20 @@ void main() {
     await bm.build();
   });
 
-  // tearDownAll(() {
-  //   final tmpDir = Directory(tmp.toFilePath(windows: Platform.isWindows));
-  //   if (tmpDir.existsSync()) {
-  //     tmpDir.deleteSync(recursive: true);
-  //   }
-  // });
+  tearDownAll(() {
+    final tmpDir = Directory(tmp.toFilePath(windows: Platform.isWindows));
+    if (tmpDir.existsSync()) {
+      tmpDir.deleteSync(recursive: true);
+    }
+  });
 
-  // tearDown(() {
-  //   final tmpDir =
-  //       Directory(tmp.resolve('../').toFilePath(windows: Platform.isWindows));
-  //   if (tmpDir.existsSync()) {
-  //     tmpDir.deleteSync(recursive: true);
-  //   }
-  // });
+  tearDown(() {
+    final tmpDir =
+        Directory(tmp.resolve('../').toFilePath(windows: Platform.isWindows));
+    if (tmpDir.existsSync()) {
+      tmpDir.deleteSync(recursive: true);
+    }
+  });
 
   test("Non-compiled version returns mirror runtimes", () {
     final output = dart(testPackagesUri.resolve("application/"));

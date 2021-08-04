@@ -12,7 +12,7 @@ class APIResponse extends APIObject {
       {Iterable<String> contentTypes = const ["application/json"],
       this.headers}) {
     content = contentTypes.fold({}, (prev, elem) {
-      prev![elem] = APIMediaType(schema: schema);
+      prev![elem] = APIContentType(schema: schema);
       return prev;
     });
   }
@@ -30,7 +30,7 @@ class APIResponse extends APIObject {
   /// A map containing descriptions of potential response payloads.
   ///
   /// The key is a media type or media type range and the value describes it. For responses that match multiple keys, only the most specific key is applicable. e.g. text/plain overrides text/*
-  Map<String, APIMediaType?>? content;
+  Map<String, APIContentType?>? content;
 
   // Currently missing:
   // links
@@ -58,7 +58,7 @@ class APIResponse extends APIObject {
     final key = contentType;
     final existingContent = content![key];
     if (existingContent == null) {
-      content![key] = APIMediaType(schema: bodyObject);
+      content![key] = APIContentType(schema: bodyObject);
       return;
     }
 
@@ -76,7 +76,7 @@ class APIResponse extends APIObject {
     super.decode(object);
 
     description = object.decode("description");
-    content = object.decodeObjectMap("content", () => APIMediaType());
+    content = object.decodeObjectMap("content", () => APIContentType());
     headers = object.decodeObjectMap("headers", () => APIHeader());
   }
 

@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:conduit_config/conduit_config.dart';
 import 'package:test/test.dart';
+import 'config_test.reflectable.dart';
 
 void main() {
+  initializeReflectable();
   test("Success case", () {
     const yamlString = "port: 80\n"
         "name: foobar\n"
@@ -1010,10 +1012,10 @@ class SpecialInfo extends Configuration {
 
   SpecialInfo.fromString(String contents) : super.fromString(contents);
 
-  late List<String> strings;
-  late List<DatabaseConfiguration> databaseRecords;
-  late Map<String, int> integers;
-  late Map<String, DatabaseConfiguration> databaseMap;
+  List<String> strings = [];
+  List<DatabaseConfiguration> databaseRecords = [];
+  Map<String, int> integers = {};
+  Map<String, DatabaseConfiguration> databaseMap = {};
 }
 
 class OptionalEmbeddedContainer extends Configuration {

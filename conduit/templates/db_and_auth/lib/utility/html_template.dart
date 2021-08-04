@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 class HTMLRenderer {
   final Map<String, String> _cache = {};

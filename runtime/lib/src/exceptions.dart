@@ -1,7 +1,7 @@
 class TypeCoercionException implements Exception {
   TypeCoercionException(this.expectedType, this.actualType);
 
-  final Type expectedType;
+  final String expectedType;
   final Type actualType;
 
   @override

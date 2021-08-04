@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:conduit/conduit.dart';
 import 'package:conduit/src/dev/helpers.dart';

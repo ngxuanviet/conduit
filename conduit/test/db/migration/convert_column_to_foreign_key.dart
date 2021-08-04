@@ -1,5 +1,5 @@
 @Timeout(Duration(minutes: 30))
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:test/test.dart';
 import '../../../bin/conduit.dart' as c;

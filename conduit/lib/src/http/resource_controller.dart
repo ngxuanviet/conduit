@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit/src/auth/auth.dart';
@@ -245,7 +245,7 @@ abstract class ResourceController extends Controller
   Future<Response> _process() async {
     if (!request!.body.isEmpty) {
       if (!_requestContentTypeIsSupported(request)) {
-        return Response(HttpStatus.unsupportedMediaType, null, null);
+        return Response(HttpStatus.unsupportedContentType, null, null);
       }
     }
 

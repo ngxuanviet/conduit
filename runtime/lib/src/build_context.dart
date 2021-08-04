@@ -4,9 +4,7 @@ import 'package:path/path.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:pubspec/pubspec.dart';
 import 'analyzer.dart';
-import 'context.dart';
 import 'file_system.dart';
-import 'mirror_context.dart';
 import 'package:reflectable/reflectable.dart';
 import 'package:yaml/yaml.dart';
 
@@ -61,7 +59,6 @@ class BuildContext {
   final bool forTests;
 
   /// The [RuntimeContext] available during the build process.
-  MirrorContext get context => RuntimeContext.current as MirrorContext;
 
   Uri get targetScriptFileUri => forTests
       ? getDirectory(buildDirectoryUri.resolve("test/"))

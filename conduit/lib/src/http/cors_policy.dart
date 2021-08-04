@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:universal_io/io.dart';
 import 'http.dart';
 
 /// Describes a CORS policy for a [Controller].

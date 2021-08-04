@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 void copyDirectory({required Uri src, required Uri dst}) {
   final srcDir = Directory.fromUri(src);

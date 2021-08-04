@@ -1,7 +1,7 @@
 // ignore: unnecessary_const
 @Tags(const ["cli"])
 import 'dart:async';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:conduit/conduit.dart';
@@ -24,8 +24,8 @@ void main() {
   late PostgreSQLPersistentStore store;
 
   setUpAll(() async {
-    final t =
-        CLIClient(WorkingDirectoryAgent(DartProjectAgent.projectsDirectory));
+    final t = CLIClient(
+        WorkingDirectoryAgent(DartProjectAgent.projectsDirectory.uri));
     cli = await t.createTestProject();
     await cli.agent.getDependencies(offline: true);
   });

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 import 'dart:isolate';
 
 import 'package:conduit/src/cli/command.dart';
@@ -210,7 +210,7 @@ class CLIServer extends CLICommand with CLIProject {
 
     var contents = """
 import 'dart:async';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:conduit/conduit.dart';
 import 'package:conduit/src/cli/starter.dart';

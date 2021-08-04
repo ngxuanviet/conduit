@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:args/args.dart' as arg_package;
 import 'package:conduit/src/application/application.dart';
@@ -66,7 +66,7 @@ class CLIBuild extends CLICommand with CLIProject {
 
     return """
 import 'dart:async';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:conduit/conduit.dart';
 import 'package:args/args.dart' as arg_package;

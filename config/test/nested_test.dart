@@ -1,7 +1,9 @@
 import 'package:conduit_config/conduit_config.dart';
 import 'package:test/test.dart';
+import 'nested_test.reflectable.dart';
 
 void main() {
+  initializeReflectable();
   test("Root", () {
     final message = getMessage({
       "id": 1,
@@ -180,11 +182,11 @@ class Parent extends Configuration {
 
   late String id;
 
-  List<List<Parent>>? listOfListOfParents;
+  List<List<Parent>>? listOfListOfParents = [];
 
-  List<Parent>? peers;
+  List<Parent>? peers = [];
 
-  Map<String, Child>? namedChildren;
+  Map<String, Child>? namedChildren = {};
 }
 
 class Child extends Configuration {
@@ -192,7 +194,7 @@ class Child extends Configuration {
 
   Parent? parent;
 
-  List<Child>? peers;
+  List<Child>? peers = [];
 }
 
 String getMessage(Map object) {

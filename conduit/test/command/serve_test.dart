@@ -2,7 +2,7 @@
 // ignore: unnecessary_const
 @Tags(["cli"])
 import 'dart:async';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:fs_test_agent/dart_project_agent.dart';
 import 'package:fs_test_agent/working_directory_agent.dart';
@@ -26,7 +26,7 @@ void main() {
 
   setUpAll(() async {
     templateCli = await CLIClient(
-            WorkingDirectoryAgent(DartProjectAgent.projectsDirectory))
+            WorkingDirectoryAgent(DartProjectAgent.projectsDirectory.uri))
         .createTestProject();
     await templateCli.agent.getDependencies(offline: true);
   });
@@ -207,7 +207,7 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
     projectUnderTestCli.agent.modifyFile("lib/channel.dart", (c) {
       var newContents = c.replaceAll('return Response.ok({"key": "value"});',
           "return Response.ok(File(options!.configurationFilePath!).readAsStringSync())..contentType = ContentType.TEXT;");
-      return "import 'dart:io';\n$newContents";
+      return "import 'package:universal_io/io.dart';\n$newContents";
     });
 
     task = projectUnderTestCli
@@ -223,7 +223,7 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
     projectUnderTestCli.agent.modifyFile("lib/channel.dart", (c) {
       var newContents = c.replaceAll('return Response.ok({"key": "value"});',
           "return Response.ok(File(options!.configurationFilePath!).readAsStringSync())..contentType = ContentType.TEXT;");
-      return "import 'dart:io';\n$newContents";
+      return "import 'package:universal_io/io.dart';\n$newContents";
     });
 
     task = projectUnderTestCli.start("serve", [

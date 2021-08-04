@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 import 'http.dart';
 
 /// Provides encoding and decoding services based on the [ContentType] of a [Request] or [Response].

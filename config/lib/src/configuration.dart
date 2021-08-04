@@ -3,13 +3,20 @@ import 'dart:io';
 import 'package:conduit_config/src/intermediate_exception.dart';
 import 'package:conduit_runtime/runtime.dart';
 import 'package:meta/meta.dart';
+import 'package:reflectable/mirrors.dart';
 import 'package:yaml/yaml.dart';
+
+import 'mirror_property.dart';
 
 /// Subclasses of [Configuration] read YAML strings and files, assigning values from the YAML document to properties
 /// of an instance of this type.
+@runtimeReflector
 abstract class Configuration {
   /// Default constructor.
   Configuration();
+
+  late final Map<String, MirrorConfigurationProperty> properties =
+      _collectProperties();
 
   Configuration.fromMap(Map<dynamic, dynamic> map) {
     decode(map.map<String, dynamic>((k, v) => MapEntry(k.toString(), v)));
@@ -28,9 +35,6 @@ abstract class Configuration {
   /// [file] must contain valid YAML data.
   Configuration.fromFile(File file) : this.fromString(file.readAsStringSync());
 
-  ConfigurationRuntime get _runtime =>
-      RuntimeContext.current[runtimeType] as ConfigurationRuntime;
-
   /// Ingests [value] into the properties of this type.
   ///
   /// Override this method to provide decoding behavior other than the default behavior.
@@ -39,41 +43,85 @@ abstract class Configuration {
       throw ConfigurationException(
           this, "input is not an object (is a '${value.runtimeType}')");
     }
+    final values = Map.from(value);
+    print(values);
+    properties.forEach((name, property) {
+      final takingValue = values.remove(name);
+      if (takingValue == null) {
+        return;
+      }
 
-    _runtime.decode(this, value);
+      final decodedValue = _tryDecode(
+        this,
+        name,
+        () => property.decode(takingValue),
+      );
+      if (decodedValue == null) {
+        return;
+      }
 
+      try {
+        if (decodedValue is List && decodedValue.isNotEmpty) {
+          final mirror = runtimeReflector.reflect(this);
+          // ignore: cast_nullable_to_non_nullable
+          final ref = mirror.invokeGetter(property.property.simpleName) as List;
+          for (final e in decodedValue) {
+            if (ref is List<Configuration>) {
+              final refType = ref.runtimeType.toString();
+              final innerType =
+                  refType.substring(0, refType.length - 1).split('<')[1];
+              final refMirror = runtimeReflector.annotatedClasses
+                  .firstWhere((mirror) => mirror.simpleName == innerType);
+              ref.add(refMirror.newInstance('fromMap', [e]) as Configuration);
+            } else {
+              ref.add(e);
+            }
+          }
+          return;
+        } else if (decodedValue is Map && decodedValue.isNotEmpty) {
+          final mirror = runtimeReflector.reflect(this);
+          // ignore: cast_nullable_to_non_nullable
+          final ref = mirror.invokeGetter(property.property.simpleName) as Map;
+          for (final e in decodedValue.entries) {
+            if (ref is Map<String, Configuration>) {
+              final refType = ref.runtimeType.toString();
+              final innerType =
+                  refType.substring(0, refType.length - 1).split(' ')[1];
+              final refMirror = runtimeReflector.annotatedClasses
+                  .firstWhere((mirror) => mirror.simpleName == innerType);
+              ref[e.key as String] =
+                  refMirror.newInstance('fromMap', [e.value]) as Configuration;
+            } else {
+              ref[e.key] = e.value;
+            }
+          }
+          return;
+        }
+      } catch (e) {
+        throw ConfigurationException(this, "input is wrong type",
+            keyPath: [name]);
+      }
+
+      if (!runtimeReflector
+          .reflect(decodedValue as Object)
+          .type
+          .isAssignableTo(property.property.type)) {
+        throw ConfigurationException(this, "input is wrong type",
+            keyPath: [name]);
+      }
+
+      final mirror = runtimeReflector.reflect(this);
+      mirror.invokeSetter(property.property.simpleName, decodedValue);
+    });
+
+    if (values.isNotEmpty) {
+      throw ConfigurationException(this,
+          "unexpected keys found: ${values.keys.map((s) => "'$s'").join(", ")}.");
+    }
     validate();
   }
 
-  /// Validates this configuration.
-  ///
-  /// By default, ensures all required keys are non-null.
-  ///
-  /// Override this method to perform validations on input data. Throw [ConfigurationException]
-  /// for invalid data.
-  @mustCallSuper
-  void validate() {
-    _runtime.validate(this);
-  }
-
-  static dynamic getEnvironmentOrValue(dynamic value) {
-    if (value is String && value.startsWith(r"$")) {
-      final envKey = value.substring(1);
-      if (!Platform.environment.containsKey(envKey)) {
-        return null;
-      }
-
-      return Platform.environment[envKey];
-    }
-    return value;
-  }
-}
-
-abstract class ConfigurationRuntime {
-  void decode(Configuration configuration, Map input);
-  void validate(Configuration configuration);
-
-  dynamic tryDecode(
+  dynamic _tryDecode(
     Configuration configuration,
     String name,
     dynamic Function() decode,
@@ -94,20 +142,19 @@ abstract class ConfigurationRuntime {
           e.keyPath,
           underlying.keyPath,
         ].expand((i) => i).toList();
-
         throw ConfigurationException(
           configuration,
           underlying.message,
           keyPath: keyPaths,
         );
       } else if (underlying is TypeError) {
+        print([name, ...e.keyPath]);
         throw ConfigurationException(
           configuration,
           "input is wrong type",
           keyPath: [name, ...e.keyPath],
         );
       }
-
       throw ConfigurationException(
         configuration,
         underlying.toString(),
@@ -121,6 +168,72 @@ abstract class ConfigurationRuntime {
       );
     }
   }
+
+  /// Validates this configuration.
+  ///
+  /// By default, ensures all required keys are non-null.
+  ///
+  /// Override this method to perform validations on input data. Throw [ConfigurationException]
+  /// for invalid data.
+  @mustCallSuper
+  void validate() {
+    final configMirror = runtimeReflector.reflect(this);
+    final requiredValuesThatAreMissing = properties.values
+        .where((v) {
+          try {
+            final value = configMirror.invokeGetter(v.key);
+            return v.isRequired && value == null;
+          } catch (e) {
+            return true;
+          }
+        })
+        .map((v) => v.key)
+        .toList();
+
+    if (requiredValuesThatAreMissing.isNotEmpty) {
+      throw ConfigurationException.missingKeys(
+          this, requiredValuesThatAreMissing);
+    }
+  }
+
+  static dynamic getEnvironmentOrValue(dynamic value) {
+    if (value is String && value.startsWith(r"$")) {
+      final envKey = value.substring(1);
+      if (!Platform.environment.containsKey(envKey)) {
+        return null;
+      }
+
+      return Platform.environment[envKey];
+    }
+    return value;
+  }
+
+  Map<String, MirrorConfigurationProperty> _collectProperties() {
+    final declarations = <VariableMirror>[];
+
+    ClassMirror? ptr =
+        runtimeReflector.reflectType(runtimeType) as ClassMirror?;
+    while (ptr != null &&
+        ptr.isSubclassOf(
+            runtimeReflector.reflectType(Configuration) as ClassMirror)) {
+      declarations.addAll(ptr.declarations.values
+          .whereType<VariableMirror>()
+          .where((vm) => !vm.isStatic && !vm.isPrivate));
+      ptr = ptr.superclass;
+    }
+
+    final m = <String, MirrorConfigurationProperty>{};
+    for (final vm in declarations) {
+      final name = vm.simpleName;
+      m[name] = MirrorConfigurationProperty(vm);
+    }
+    return m;
+  }
+}
+
+abstract class ConfigurationRuntime {
+  void decode(Configuration configuration, Map input);
+  void validate(Configuration configuration);
 }
 
 /// Possible options for a configuration item property's optionality.
@@ -154,44 +267,6 @@ class ConfigurationItemAttribute {
 
   final ConfigurationItemAttributeType type;
 }
-
-/// A [ConfigurationItemAttribute] for required properties.
-///
-/// **NOTICE**: This will be removed in version 2.0.0.
-/// To signify required or optional config you could do:
-/// Example:
-/// ```dart
-/// class MyConfig extends Config {
-///    late String required;
-///    String? optional;
-///    String optionalWithDefult = 'default';
-///    late String optionalWithComputedDefault = _default();
-///
-///    String _default() => 'computed';
-/// }
-/// ```
-@Deprecated("Use `late` property")
-const ConfigurationItemAttribute requiredConfiguration =
-    ConfigurationItemAttribute._(ConfigurationItemAttributeType.required);
-
-/// A [ConfigurationItemAttribute] for optional properties.
-///
-/// **NOTICE**: This will be removed in version 2.0.0.
-/// To signify required or optional config you could do:
-/// Example:
-/// ```dart
-/// class MyConfig extends Config {
-///    late String required;
-///    String? optional;
-///    String optionalWithDefult = 'default';
-///    late String optionalWithComputedDefault = _default();
-///
-///    String _default() => 'computed';
-/// }
-/// ```
-@Deprecated("Use `nullable` property")
-const ConfigurationItemAttribute optionalConfiguration =
-    ConfigurationItemAttribute._(ConfigurationItemAttributeType.optional);
 
 /// Thrown when reading data into a [Configuration] fails.
 class ConfigurationException {

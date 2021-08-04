@@ -15,17 +15,6 @@ class Build {
   late final Map<String, Uri> packageMap = context.resolvedPackages;
 
   Future execute() async {
-    final compilers = context.context.compilers;
-
-    print("Resolving ASTs...");
-    final astsToResolve = <Uri>{
-      ...compilers.expand((c) => c.getUrisToResolve(context))
-    };
-    await Future.forEach<Uri>(
-      astsToResolve,
-      (astUri) => context.analyzer.resolveUnitAt(context.resolveUri(astUri)!),
-    );
-
     final pubspecMap = <String, dynamic>{
       'name': 'runtime_target',
       'version': '1.0.0',
@@ -71,10 +60,6 @@ class Build {
                 .resolve('build.yaml')
                 .toFilePath(windows: Platform.isWindows))
             .readAsStringSync());
-
-    for (final compiler in context.context.compilers) {
-      compiler.didFinishPackageGeneration(context);
-    }
 
     print("Fetching dependencies (--offline --no-precompile)...");
     await getDependencies();

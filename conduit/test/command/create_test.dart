@@ -1,13 +1,12 @@
 // ignore: unnecessary_const
-@Tags(["cli"])
-import 'dart:io';
-
 import 'package:fs_test_agent/dart_project_agent.dart';
 import 'package:fs_test_agent/working_directory_agent.dart';
 import 'package:path/path.dart' as path_lib;
 import 'package:path/path.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:test/test.dart';
+@Tags(["cli"])
+import 'package:universal_io/io.dart';
 import 'package:yaml/yaml.dart';
 
 import '../not_tests/cli_helpers.dart';
@@ -17,7 +16,8 @@ void main() {
 
   setUpAll(() async {
     await CLIClient.activateCLI();
-    final terminal = WorkingDirectoryAgent(DartProjectAgent.projectsDirectory);
+    final terminal =
+        WorkingDirectoryAgent(DartProjectAgent.projectsDirectory.uri);
     cli = CLIClient(terminal);
   });
 

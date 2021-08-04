@@ -2,7 +2,7 @@
 @Timeout(const Duration(seconds: 120))
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:conduit/conduit.dart';
 import 'package:http/http.dart' as http;

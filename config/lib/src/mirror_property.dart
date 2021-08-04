@@ -2,6 +2,7 @@ import 'package:conduit_config/src/configuration.dart';
 import 'package:conduit_config/src/intermediate_exception.dart';
 import 'package:conduit_runtime/runtime.dart';
 import 'package:reflectable/reflectable.dart';
+import 'package:yaml/yaml.dart';
 
 class MirrorTypeCodec {
   MirrorTypeCodec(this.type) {
@@ -27,13 +28,27 @@ class MirrorTypeCodec {
   final TypeMirror type;
 
   dynamic _decodeValue(dynamic value) {
-    if (type.isSubtypeOf(runtimeReflector.reflectType(int))) {
-      return _decodeInt(value);
+    if (type.isSubtypeOf(runtimeReflector.reflectType(num))) {
+      print(type.reflectedType);
+      return _decodeNum(value);
     } else if (type.isSubtypeOf(runtimeReflector.reflectType(bool))) {
       return _decodeBool(value);
+    } else if (type.isSubtypeOf(runtimeReflector.reflectType(String))) {
+      if (value is YamlList) {
+        return _decodeList(value.nodes);
+      } else if (value is YamlScalar) {
+        return value.value as String;
+      }
+      return value as String?;
     } else if (type.isSubtypeOf(runtimeReflector.reflectType(Configuration))) {
       return _decodeConfig(value);
     } else if (type.isSubtypeOf(runtimeReflector.reflectType(List))) {
+      if (value is YamlMap) {
+        return _decodeMap(value.value);
+      }
+      if (value is Set) {
+        return _decodeList(value.toList());
+      }
       return _decodeList(value as List);
     } else if (type.isSubtypeOf(runtimeReflector.reflectType(Map))) {
       return _decodeMap(value as Map);
@@ -42,7 +57,7 @@ class MirrorTypeCodec {
     return value;
   }
 
-  dynamic _decodeBool(dynamic value) {
+  bool _decodeBool(dynamic value) {
     if (value is String) {
       return value == "true";
     }
@@ -50,25 +65,44 @@ class MirrorTypeCodec {
     return value as bool;
   }
 
-  dynamic _decodeInt(dynamic value) {
+  num _decodeNum(dynamic value) {
     if (value is String) {
-      return int.parse(value);
+      return num.parse(value);
     }
 
-    return value as int;
+    return value as num;
   }
 
   Configuration _decodeConfig(dynamic object) {
-    final item = (type as ClassMirror).newInstance("", []) as Configuration;
+    final item = (type as ClassMirror).newInstance('', []) as Configuration;
 
     item.decode(object);
 
     return item;
   }
 
-  List<dynamic> _decodeList(List value) {
-    final out = (type as ClassMirror).newInstance('', []) as List;
-    final innerDecoder = MirrorTypeCodec(type.typeArguments.first);
+  dynamic _decodeList(List value) {
+    final out = [];
+    if (value.isEmpty) {
+      return out;
+    }
+    var firstVal = value.first;
+    if (firstVal is YamlNode) {
+      firstVal = firstVal.value;
+    }
+
+    TypeMirror innerType;
+    if (firstVal is List) {
+      innerType = runtimeReflector.reflectType(List);
+    } else if (firstVal is Map) {
+      innerType = runtimeReflector.reflectType(Map);
+    } else if (firstVal is Set) {
+      innerType = runtimeReflector.reflectType(List);
+    } else {
+      innerType = runtimeReflector.reflect(firstVal as Object).type;
+    }
+
+    final innerDecoder = MirrorTypeCodec(innerType);
     for (var i = 0; i < value.length; i++) {
       try {
         final v = innerDecoder._decodeValue(value[i]);
@@ -80,17 +114,26 @@ class MirrorTypeCodec {
         throw IntermediateException(e, [i]);
       }
     }
+
     return out;
   }
 
-  Map<dynamic, dynamic> _decodeMap(Map value) {
-    final map = (type as ClassMirror).newInstance("", []) as Map;
+  dynamic _decodeMap(Map value) {
+    final map = {};
 
-    final innerDecoder = MirrorTypeCodec(type.typeArguments.last);
     value.forEach((key, val) {
       if (key is! String) {
         throw StateError('cannot have non-String key');
       }
+      TypeMirror innerType;
+      if (val is List) {
+        innerType = runtimeReflector.reflectType(List);
+      } else if (val is Map) {
+        innerType = runtimeReflector.reflectType(Map);
+      } else {
+        innerType = runtimeReflector.reflectType(val.runtimeType);
+      }
+      final innerDecoder = MirrorTypeCodec(innerType);
 
       try {
         map[key] = innerDecoder._decodeValue(val);
@@ -108,100 +151,6 @@ class MirrorTypeCodec {
   String get expectedType {
     return type.reflectedType.toString();
   }
-
-  String get source {
-    if (type.isSubtypeOf(runtimeReflector.reflectType(int))) {
-      return _decodeIntSource;
-    } else if (type.isSubtypeOf(runtimeReflector.reflectType(bool))) {
-      return _decodeBoolSource;
-    } else if (type.isSubtypeOf(runtimeReflector.reflectType(Configuration))) {
-      return _decodeConfigSource;
-    } else if (type.isSubtypeOf(runtimeReflector.reflectType(List))) {
-      return _decodeListSource;
-    } else if (type.isSubtypeOf(runtimeReflector.reflectType(Map))) {
-      return _decodeMapSource;
-    }
-
-    return "return v;";
-  }
-
-  String get _decodeListSource {
-    final typeParam = MirrorTypeCodec(type.typeArguments.first);
-    return """
-final out = <${typeParam.expectedType}>[];
-final decoder = (v) {
-  ${typeParam.source}
-};
-for (var i = 0; i < (v as List).length; i++) {
-  try {
-    final innerValue = decoder(v[i]);
-    out.add(innerValue);
-  } on IntermediateException catch (e) {
-    e.keyPath.add(i);
-    rethrow;
-  } catch (e) {
-    throw IntermediateException(e, [i]);
-  }
-}
-return out;
-    """;
-  }
-
-  String get _decodeMapSource {
-    final typeParam = MirrorTypeCodec(type.typeArguments.last);
-    return """
-final map = <String, ${typeParam.expectedType}>{};
-final decoder = (v) {
-  ${typeParam.source}
-};
-v.forEach((key, val) {
-  if (key is! String) {
-    throw StateError('cannot have non-String key');
-  }
-
-  try {
-    map[key] = decoder(val);
-  } on IntermediateException catch (e) {
-    e.keyPath.add(key);
-    rethrow;
-  } catch (e) {
-    throw IntermediateException(e, [key]);
-  }
-});
-
-return map;
-    """;
-  }
-
-  String get _decodeConfigSource {
-    return """
-    final item = $expectedType();
-
-    item.decode(v);
-
-    return item;
-    """;
-  }
-
-  String get _decodeIntSource {
-    return """
-    if (v is String) {
-      return int.parse(v);
-    }
-
-    return v as int;
-""";
-  }
-
-  String get _decodeBoolSource {
-    return """
-    if (v is String) {
-      return v == "true";
-    }
-
-    return v as bool;
-    """;
-  }
 }
 
 class MirrorConfigurationProperty {
@@ -213,8 +162,6 @@ class MirrorConfigurationProperty {
 
   String get key => property.simpleName;
   bool get isRequired => _isVariableRequired(property);
-
-  String get source => codec.source;
 
   static bool _isVariableRequired(VariableMirror m) {
     try {

@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:conduit/src/http/http.dart';
 import 'package:conduit_runtime/runtime.dart';
+import 'package:universal_io/io.dart';
 
 /// Decodes [bytes] according to [contentType].
 ///

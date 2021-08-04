@@ -50,7 +50,7 @@ void main() {
           coerce<int>(wash("foo"));
           fail('unreachable');
         } on TypeCoercionException catch (e) {
-          expect(e.expectedType, int);
+          expect(e.expectedType, 'int');
           expect(e.actualType, String);
         }
       });
@@ -59,7 +59,7 @@ void main() {
           coerce<String>(wash(5));
           fail('unreachable');
         } on TypeCoercionException catch (e) {
-          expect(e.expectedType, String);
+          expect(e.expectedType, 'String');
           expect(e.actualType, int);
         }
       });
@@ -68,7 +68,7 @@ void main() {
           coerce<bool>(wash("foo"));
           fail('unreachable');
         } on TypeCoercionException catch (e) {
-          expect(e.expectedType, bool);
+          expect(e.expectedType, 'bool');
           expect(e.actualType, String);
         }
       });
@@ -77,7 +77,7 @@ void main() {
           coerce<num>(wash("foo"));
           fail('unreachable');
         } on TypeCoercionException catch (e) {
-          expect(e.expectedType, num);
+          expect(e.expectedType, 'num');
           expect(e.actualType, String);
         }
       });
@@ -86,7 +86,7 @@ void main() {
           coerce<double>(wash("foo"));
           fail('unreachable');
         } on TypeCoercionException catch (e) {
-          expect(e.expectedType, double);
+          expect(e.expectedType, 'double');
           expect(e.actualType, String);
         }
       });
@@ -94,90 +94,92 @@ void main() {
 
     group("($suiteName) List Types (success)", () {
       test("null/empty", () {
-        List<String>? x = coerce<List<String>?>(null);
-        expect(x, null);
-
-        x = coerce<List<String>>([]);
-        expect(x, []);
+        expect(runtimeCastList(null, String), null);
+        expect(runtimeCastList([], String), []);
       });
 
       test("int", () {
         expect(
-          coerce<List<int>>(wash([2, 4])),
+          runtimeCastList(wash([2, 4]), int),
           [2, 4],
         );
       });
 
       test("String", () {
         expect(
-          coerce<List<String>>(wash(["a", "b", "c"])),
+          runtimeCastList(wash(["a", "b", "c"]), String),
           ["a", "b", "c"],
         );
       });
 
       test("num", () {
         expect(
-          coerce<List<num>>(wash([3.0, 2])),
+          runtimeCastList(wash([3.0, 2]), num),
           [3.0, 2],
         );
       });
 
       test("bool", () {
-        expect(coerce<List<bool>>(wash([false, true])), [false, true]);
+        expect(runtimeCastList(wash([false, true]), bool), [false, true]);
       });
 
       test("list of map", () {
         expect(
-            coerce<List<Map<String, dynamic>?>>(wash([
-              {"a": "b"},
-              null,
-              {"a": 1}
-            ])),
+            runtimeCastListOfMaps(
+                wash([
+                  {"a": "b"},
+                  null,
+                  {"a": 1}
+                ]),
+                dynamic),
             [
               {"a": "b"},
               null,
               {"a": 1}
             ]);
 
-        expect(coerce<List<Map<String, dynamic>>?>(null), null);
-        expect(
-            coerce<List<Map<String, dynamic>>>([]), <Map<String, dynamic>>[]);
+        expect(runtimeCastListOfMaps(null, dynamic), null);
+        expect(runtimeCastListOfMaps([], dynamic), <Map<String, dynamic>>[]);
       });
     });
 
     group("($suiteName) List Types (cast error)", () {
       test("heterogenous", () {
         try {
-          coerce<List<int>>(wash(["x", 4]));
+          runtimeCastList(wash(["x", 4]), int);
           fail('unreachable');
         } on TypeCoercionException catch (e) {
-          expect(e.expectedType.toString(), "List<int>");
+          expect(e.expectedType, "List<int>");
           expect(e.actualType.toString(), "List<dynamic>");
         }
       });
 
       test("outer list ok, inner list not ok", () {
         try {
-          coerce<List<List<String>>>(wash([
-            ["foo", 3],
-            ["baz"]
-          ]));
+          runtimeCastListOfLists(
+              wash([
+                ["foo", 3],
+                ["baz"]
+              ]),
+              String);
           fail('unreachable');
         } on TypeCoercionException catch (e) {
-          expect(e.expectedType.toString(), "List<List<String>>");
+          expect(e.expectedType, "List<List<String>>");
           expect(e.actualType.toString(), "List<dynamic>");
         }
       });
 
       test("list of map, inner map not ok", () {
         try {
-          coerce<List<Map<String, int>>>(wash([
-            {"a": 1},
-            {"a": "b"}
-          ]));
+          runtimeCastListOfMaps(
+              wash([
+                {"a": 1},
+                {"a": "b"}
+              ]),
+              int);
           fail('unreachable');
         } on TypeCoercionException catch (e) {
-          expect(e.expectedType.toString(), "List<Map<String, int>>");
+          expect(e.expectedType, "List<Map<String, int>>");
           expect(e.actualType.toString(), "List<dynamic>");
         }
       });
@@ -186,35 +188,35 @@ void main() {
     group("($suiteName) Map types (success)", () {
       test("null", () {
         expect(
-          coerce<Map<String, dynamic>?>(null),
+          runtimeCastMap(null, dynamic),
           null,
         );
       });
 
       test("string->dynamic", () {
         expect(
-          coerce<Map<String, dynamic>>(wash({"a": 1, "b": "c"})),
+          runtimeCastMap(wash({"a": 1, "b": "c"}), dynamic),
           {"a": 1, "b": "c"},
         );
       });
 
       test("string->int", () {
         expect(
-          coerce<Map<String, int>>(wash({"a": 1, "b": 2})),
+          runtimeCastMap(wash({"a": 1, "b": 2}), int),
           {"a": 1, "b": 2},
         );
       });
 
       test("string->num", () {
         expect(
-          coerce<Map<String, num>>(wash({"a": 1, "b": 2.0})),
+          runtimeCastMap(wash({"a": 1, "b": 2.0}), num),
           {"a": 1, "b": 2.0},
         );
       });
 
       test("string->string", () {
         expect(
-          coerce<Map<String, String>>(wash({"a": "1", "b": "2.0"})),
+          runtimeCastMap(wash({"a": "1", "b": "2.0"}), String),
           {"a": "1", "b": "2.0"},
         );
       });
@@ -225,52 +227,56 @@ void main() {
         try {
           // Note: this input is not 'washed' as the wash function encodes/decodes via json, and this would be invalid json
           // But for the purpose of this test, we want an untyped map, which this input is
-          coerce<Map<String, dynamic>>(<dynamic, dynamic>{"a": 1, 2: "c"});
+          runtimeCastMap(<dynamic, dynamic>{"a": 1, 2: "c"}, dynamic);
           fail('unreachable');
         } on TypeCoercionException catch (e) {
-          expect(e.expectedType.toString(), "Map<String, dynamic>");
+          expect(e.expectedType, "Map<String, dynamic>");
           expect(e.actualType.toString(), endsWith("Map<dynamic, dynamic>"));
         }
       });
 
       test("bad val type", () {
         try {
-          coerce<Map<String, int>>(wash({"a": 1, "b": "foo"}));
+          runtimeCastMap(wash({"a": 1, "b": "foo"}), int);
           fail('unreachable');
         } on TypeCoercionException catch (e) {
-          expect(e.expectedType.toString(), "Map<String, int>");
+          expect(e.expectedType, "Map<String, int>");
           expect(e.actualType.toString(), endsWith("Map<String, dynamic>"));
         }
       });
 
       test("nested list has invalid element", () {
         try {
-          coerce<Map<String, List<String>>>(wash({
-            "a": [2]
-          }));
+          runtimeCastMapOfLists(
+              wash({
+                "a": [2]
+              }),
+              String);
           fail('unreachable');
         } on TypeCoercionException catch (e) {
-          expect(e.expectedType.toString(), "Map<String, List<String>>");
+          expect(e.expectedType, "Map<String, List<String>>");
           expect(e.actualType.toString(), endsWith("Map<String, dynamic>"));
         }
       });
 
       test("nested map has invalid value type", () {
         try {
-          coerce<Map<String, Map<String, int>>>(wash({"a": []}));
+          runtimeCastMapOfMaps(wash({"a": []}), int);
           fail('unreachable');
         } on TypeCoercionException catch (e) {
-          expect(e.expectedType.toString(), "Map<String, Map<String, int>>");
+          expect(e.expectedType, "Map<String, Map<String, int>>");
           expect(e.actualType.toString(), endsWith("Map<String, dynamic>"));
         }
 
         try {
-          coerce<Map<String, Map<String, int>>>(wash({
-            "a": {"b": "foo"}
-          }));
+          runtimeCastMapOfMaps(
+              wash({
+                "a": {"b": "foo"}
+              }),
+              int);
           fail('unreachable');
         } on TypeCoercionException catch (e) {
-          expect(e.expectedType.toString(), "Map<String, Map<String, int>>");
+          expect(e.expectedType, "Map<String, Map<String, int>>");
           expect(e.actualType.toString(), endsWith("Map<String, dynamic>"));
         }
       });

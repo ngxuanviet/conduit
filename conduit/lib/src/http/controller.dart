@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
@@ -338,7 +337,6 @@ abstract class Controller
   }
 }
 
-@PreventCompilation()
 class _ControllerRecycler<T> extends Controller {
   _ControllerRecycler(this.generator, Recyclable<T> instance) {
     recycleState = instance.recycledState;
@@ -419,7 +417,6 @@ class _ControllerRecycler<T> extends Controller {
       nextInstanceToReceive?.documentOperations(components, route, path) ?? {};
 }
 
-@PreventCompilation()
 class _FunctionController extends Controller {
   _FunctionController(this._handler);
 

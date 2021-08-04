@@ -1,6 +1,6 @@
 // ignore: unnecessary_const
 @Tags(const ["cli"])
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:fs_test_agent/dart_project_agent.dart';
 import 'package:fs_test_agent/working_directory_agent.dart';
@@ -14,7 +14,7 @@ void main() {
 
   setUpAll(() async {
     templateCli = await CLIClient(
-      WorkingDirectoryAgent(DartProjectAgent.projectsDirectory),
+      WorkingDirectoryAgent(DartProjectAgent.projectsDirectory.uri),
     ).createTestProject();
 
     await templateCli.agent.getDependencies(offline: true);
