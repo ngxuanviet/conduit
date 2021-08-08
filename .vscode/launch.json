@@ -11,6 +11,19 @@
             "type": "dart"
         },
         {
+            "name": "Config Tests",
+            "type": "dart",
+            "program": "config/test",
+            "request": "launch",
+            "args": [
+                "test"
+            ],
+            "env": {
+                "TEST_VALUE": 1,
+                "TEST_BOOL": true
+            }
+        },
+        {
             "name": "All Conduit Tests",
             "type": "dart",
             "request": "launch",

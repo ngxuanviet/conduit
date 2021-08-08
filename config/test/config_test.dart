@@ -934,10 +934,11 @@ class TopLevelConfigurationWithValidation extends Configuration {
   String? name;
 
   @override
-  void validate() {
-    super.validate();
+  void validate({Type configuration = Configuration, String keyPath = ''}) {
+    super.validate(keyPath: keyPath);
     if (port < 0 || port > 65535) {
-      throw ConfigurationException(this, "$port", keyPath: ["port"]);
+      throw ConfigurationException(configuration, "$port",
+          keyPath: "$keyPath.port");
     }
   }
 }
@@ -997,12 +998,12 @@ class DatabaseConfigurationSubclassWithValidation
   DatabaseConfigurationSubclassWithValidation();
 
   @override
-  void validate() {
-    super.validate();
+  void validate({Type configuration = Configuration, String keyPath = ''}) {
+    super.validate(configuration: configuration, keyPath: keyPath);
     final RegExp validHost = RegExp(
         r"^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$");
     if (!validHost.hasMatch(host)) {
-      throw ConfigurationException(this, host, keyPath: ["host"]);
+      throw ConfigurationException(runtimeType, host, keyPath: "$keyPath.host");
     }
   }
 }

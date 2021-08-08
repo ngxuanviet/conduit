@@ -1,5 +1,4 @@
 import 'package:conduit_config/src/configuration.dart';
-import 'package:conduit_config/src/intermediate_exception.dart';
 import 'package:conduit_runtime/runtime.dart';
 import 'package:reflectable/reflectable.dart';
 import 'package:yaml/yaml.dart';
@@ -27,31 +26,45 @@ class MirrorTypeCodec {
 
   final TypeMirror type;
 
-  dynamic _decodeValue(dynamic value) {
-    if (type.isSubtypeOf(runtimeReflector.reflectType(num))) {
-      print(type.reflectedType);
-      return _decodeNum(value);
-    } else if (type.isSubtypeOf(runtimeReflector.reflectType(bool))) {
-      return _decodeBool(value);
-    } else if (type.isSubtypeOf(runtimeReflector.reflectType(String))) {
-      if (value is YamlList) {
-        return _decodeList(value.nodes);
-      } else if (value is YamlScalar) {
-        return value.value as String;
+  dynamic _decodeValue(dynamic value,
+      {Type configuration = Configuration, String keyPath = ''}) {
+    try {
+      if (type.isSubtypeOf(runtimeReflector.reflectType(num))) {
+        return _decodeNum(value);
+      } else if (type.isSubtypeOf(runtimeReflector.reflectType(bool))) {
+        return _decodeBool(value);
+      } else if (type.isSubtypeOf(runtimeReflector.reflectType(String))) {
+        if (value is YamlList) {
+          return _decodeList(value.nodes,
+              configuration: configuration, keyPath: keyPath);
+        } else if (value is YamlScalar) {
+          return value.value as String;
+        }
+        return value as String?;
+      } else if (type
+          .isSubtypeOf(runtimeReflector.reflectType(Configuration))) {
+        return _decodeConfig(value,
+            configuration: configuration, keyPath: keyPath);
+      } else if (type.isSubtypeOf(runtimeReflector.reflectType(List))) {
+        if (value is YamlMap) {
+          return _decodeMap(value.value,
+              configuration: configuration, keyPath: keyPath);
+        }
+        if (value is Set) {
+          throw UnimplementedError;
+        }
+        return _decodeList(value as List,
+            configuration: configuration, keyPath: keyPath);
+      } else if (type.isSubtypeOf(runtimeReflector.reflectType(Map))) {
+        return _decodeMap(value as Map,
+            configuration: configuration, keyPath: keyPath);
       }
-      return value as String?;
-    } else if (type.isSubtypeOf(runtimeReflector.reflectType(Configuration))) {
-      return _decodeConfig(value);
-    } else if (type.isSubtypeOf(runtimeReflector.reflectType(List))) {
-      if (value is YamlMap) {
-        return _decodeMap(value.value);
-      }
-      if (value is Set) {
-        return _decodeList(value.toList());
-      }
-      return _decodeList(value as List);
-    } else if (type.isSubtypeOf(runtimeReflector.reflectType(Map))) {
-      return _decodeMap(value as Map);
+    } on ConfigurationException catch (e) {
+      throw ConfigurationException(configuration, e.toString(),
+          keyPath: e.keyPath);
+    } catch (e) {
+      throw ConfigurationException(configuration, e.toString(),
+          keyPath: keyPath);
     }
 
     return value;
@@ -73,57 +86,59 @@ class MirrorTypeCodec {
     return value as num;
   }
 
-  Configuration _decodeConfig(dynamic object) {
+  Configuration _decodeConfig(dynamic object,
+      {Type? configuration = Configuration, String keyPath = ''}) {
     final item = (type as ClassMirror).newInstance('', []) as Configuration;
 
-    item.decode(object);
+    item.decode(object,
+        configuration: configuration ?? type.reflectedType, keyPath: keyPath);
 
     return item;
   }
 
-  dynamic _decodeList(List value) {
+  dynamic _decodeList(List value,
+      {Type configuration = Configuration, String keyPath = ''}) {
     final out = [];
     if (value.isEmpty) {
       return out;
     }
-    var firstVal = value.first;
-    if (firstVal is YamlNode) {
-      firstVal = firstVal.value;
-    }
 
-    TypeMirror innerType;
-    if (firstVal is List) {
-      innerType = runtimeReflector.reflectType(List);
-    } else if (firstVal is Map) {
-      innerType = runtimeReflector.reflectType(Map);
-    } else if (firstVal is Set) {
-      innerType = runtimeReflector.reflectType(List);
-    } else {
-      innerType = runtimeReflector.reflect(firstVal as Object).type;
-    }
-
-    final innerDecoder = MirrorTypeCodec(innerType);
     for (var i = 0; i < value.length; i++) {
-      try {
-        final v = innerDecoder._decodeValue(value[i]);
-        out.add(v);
-      } on IntermediateException catch (e) {
-        e.keyPath.add(i);
-        rethrow;
-      } catch (e) {
-        throw IntermediateException(e, [i]);
+      var val = value[i];
+      if (val is YamlNode) {
+        val = val.value;
       }
-    }
 
+      TypeMirror innerType;
+      if (val is List) {
+        innerType = runtimeReflector.reflectType(List);
+      } else if (val is Map) {
+        innerType = runtimeReflector.reflectType(Map);
+      } else if (val is Set) {
+        innerType = runtimeReflector.reflectType(List);
+      } else {
+        innerType = runtimeReflector.reflect(val as Object).type;
+      }
+
+      final innerDecoder = MirrorTypeCodec(innerType);
+      final v = innerDecoder._decodeValue(val,
+          configuration: configuration, keyPath: '$keyPath[$i]');
+      out.add(v);
+    }
     return out;
   }
 
-  dynamic _decodeMap(Map value) {
+  dynamic _decodeMap(Map value,
+      {Type configuration = Configuration, String keyPath = ''}) {
     final map = {};
 
     value.forEach((key, val) {
       if (key is! String) {
         throw StateError('cannot have non-String key');
+      }
+
+      if (val is YamlNode) {
+        val = val.value;
       }
       TypeMirror innerType;
       if (val is List) {
@@ -134,15 +149,8 @@ class MirrorTypeCodec {
         innerType = runtimeReflector.reflectType(val.runtimeType);
       }
       final innerDecoder = MirrorTypeCodec(innerType);
-
-      try {
-        map[key] = innerDecoder._decodeValue(val);
-      } on IntermediateException catch (e) {
-        e.keyPath.add(key);
-        rethrow;
-      } catch (e) {
-        throw IntermediateException(e, [key]);
-      }
+      map[key] = innerDecoder._decodeValue(val,
+          configuration: configuration, keyPath: keyPath);
     });
 
     return map;
@@ -178,7 +186,9 @@ class MirrorConfigurationProperty {
     }
   }
 
-  dynamic decode(dynamic input) {
-    return codec._decodeValue(Configuration.getEnvironmentOrValue(input));
+  dynamic decode(dynamic input,
+      {Type configuration = Configuration, String keyPath = ''}) {
+    return codec._decodeValue(Configuration.getEnvironmentOrValue(input),
+        configuration: configuration, keyPath: keyPath);
   }
 }

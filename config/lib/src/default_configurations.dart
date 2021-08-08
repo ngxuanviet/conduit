@@ -11,8 +11,9 @@ class DatabaseConfiguration extends Configuration {
 
   DatabaseConfiguration.fromString(String yaml) : super.fromString(yaml);
 
-  DatabaseConfiguration.fromMap(Map<dynamic, dynamic> yaml)
-      : super.fromMap(yaml);
+  DatabaseConfiguration.fromMap(Map<dynamic, dynamic> yaml,
+      {Type? configuration, String keyPath = ''})
+      : super.fromMap(yaml, configuration: configuration, keyPath: keyPath);
 
   /// A named constructor that contains all of the properties of this instance.
   DatabaseConfiguration.withConnectionInfo(
@@ -57,15 +58,17 @@ class DatabaseConfiguration extends Configuration {
   bool isTemporary = false;
 
   @override
-  void decode(dynamic value) {
+  void decode(dynamic value, {Type? configuration, String keyPath = ''}) {
+    configuration ??= runtimeType;
     if (value is Map) {
-      super.decode(value);
+      super.decode(value, configuration: configuration, keyPath: keyPath);
       return;
     }
 
     if (value is! String) {
-      throw ConfigurationException(this,
-          "'${value.runtimeType}' is not assignable; must be a object or string");
+      throw ConfigurationException(configuration,
+          "'${value.runtimeType}' is not assignable; must be a object or string",
+          keyPath: keyPath);
     }
 
     final uri = Uri.parse(value);
@@ -76,7 +79,7 @@ class DatabaseConfiguration extends Configuration {
     }
 
     if (uri.userInfo == '') {
-      validate();
+      validate(configuration: configuration, keyPath: keyPath);
       return;
     }
 
@@ -88,7 +91,7 @@ class DatabaseConfiguration extends Configuration {
       password = Uri.decodeComponent(authority.last);
     }
 
-    validate();
+    validate(configuration: configuration, keyPath: keyPath);
   }
 }
 

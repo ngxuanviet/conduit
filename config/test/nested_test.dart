@@ -171,7 +171,7 @@ void main() {
     expect(
         msg,
         contains(
-            "Failed to read key 'listOfListOfParents[0][1]' for 'Parent'"));
+            "Failed to read key 'listOfListOfParents[1][0]' for 'Parent'"));
   });
 }
 

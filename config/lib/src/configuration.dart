@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:conduit_config/src/intermediate_exception.dart';
 import 'package:conduit_runtime/runtime.dart';
 import 'package:meta/meta.dart';
 import 'package:reflectable/mirrors.dart';
@@ -18,8 +17,10 @@ abstract class Configuration {
   late final Map<String, MirrorConfigurationProperty> properties =
       _collectProperties();
 
-  Configuration.fromMap(Map<dynamic, dynamic> map) {
-    decode(map.map<String, dynamic>((k, v) => MapEntry(k.toString(), v)));
+  Configuration.fromMap(Map<dynamic, dynamic> map,
+      {Type? configuration, String keyPath = ''}) {
+    decode(map.map<String, dynamic>((k, v) => MapEntry(k.toString(), v)),
+        configuration: configuration ?? runtimeType, keyPath: keyPath);
   }
 
   /// [contents] must be YAML.
@@ -27,7 +28,7 @@ abstract class Configuration {
     final yamlMap = loadYaml(contents) as Map<dynamic, dynamic>?;
     final map =
         yamlMap?.map<String, dynamic>((k, v) => MapEntry(k.toString(), v));
-    decode(map);
+    decode(map, configuration: runtimeType);
   }
 
   /// Opens a file and reads its string contents into this instance's properties.
@@ -38,76 +39,85 @@ abstract class Configuration {
   /// Ingests [value] into the properties of this type.
   ///
   /// Override this method to provide decoding behavior other than the default behavior.
-  void decode(dynamic value) {
+  void decode(dynamic value, {Type? configuration, String keyPath = ''}) {
+    configuration ??= runtimeType;
     if (value is! Map) {
       throw ConfigurationException(
-          this, "input is not an object (is a '${value.runtimeType}')");
+          configuration, "input is not an object (is a '${value.runtimeType}')",
+          keyPath: keyPath);
     }
     final values = Map.from(value);
-    print(values);
     properties.forEach((name, property) {
       final takingValue = values.remove(name);
       if (takingValue == null) {
         return;
       }
 
-      final decodedValue = _tryDecode(
-        this,
-        name,
-        () => property.decode(takingValue),
-      );
+      final decodedValue = property.decode(takingValue,
+          configuration: configuration!, keyPath: '$keyPath.$name');
       if (decodedValue == null) {
         return;
       }
 
-      try {
-        if (decodedValue is List && decodedValue.isNotEmpty) {
-          final mirror = runtimeReflector.reflect(this);
-          // ignore: cast_nullable_to_non_nullable
-          final ref = mirror.invokeGetter(property.property.simpleName) as List;
-          for (final e in decodedValue) {
-            if (ref is List<Configuration>) {
-              final refType = ref.runtimeType.toString();
-              final innerType =
-                  refType.substring(0, refType.length - 1).split('<')[1];
-              final refMirror = runtimeReflector.annotatedClasses
-                  .firstWhere((mirror) => mirror.simpleName == innerType);
-              ref.add(refMirror.newInstance('fromMap', [e]) as Configuration);
-            } else {
-              ref.add(e);
-            }
-          }
-          return;
-        } else if (decodedValue is Map && decodedValue.isNotEmpty) {
-          final mirror = runtimeReflector.reflect(this);
-          // ignore: cast_nullable_to_non_nullable
-          final ref = mirror.invokeGetter(property.property.simpleName) as Map;
-          for (final e in decodedValue.entries) {
-            if (ref is Map<String, Configuration>) {
-              final refType = ref.runtimeType.toString();
-              final innerType =
-                  refType.substring(0, refType.length - 1).split(' ')[1];
-              final refMirror = runtimeReflector.annotatedClasses
-                  .firstWhere((mirror) => mirror.simpleName == innerType);
-              ref[e.key as String] =
-                  refMirror.newInstance('fromMap', [e.value]) as Configuration;
-            } else {
-              ref[e.key] = e.value;
-            }
-          }
-          return;
+      if (decodedValue is List && decodedValue.isNotEmpty) {
+        final mirror = runtimeReflector.reflect(this);
+        // ignore: cast_nullable_to_non_nullable
+        final ref = mirror.invokeGetter(property.property.simpleName) as List?;
+        if (ref == null) {
+          throw ConfigurationException(configuration, "input is wrong type",
+              keyPath: '$keyPath.$name');
         }
-      } catch (e) {
-        throw ConfigurationException(this, "input is wrong type",
-            keyPath: [name]);
+        for (var i = 0; i < decodedValue.length; i++) {
+          final e = decodedValue[i];
+          if (ref is List<Configuration>) {
+            final refType = ref.runtimeType.toString();
+            final innerType =
+                refType.substring(0, refType.length - 1).split('<')[1];
+            final refMirror = runtimeReflector.annotatedClasses
+                .firstWhere((mirror) => mirror.simpleName == innerType);
+            final config = refMirror.newInstance('', []) as Configuration;
+            config.decode(e,
+                configuration: configuration, keyPath: '$keyPath.$name[$i]');
+            ref.add(config);
+          } else {
+            ref.add(e);
+          }
+        }
+        return;
+      } else if (decodedValue is Map && decodedValue.isNotEmpty) {
+        final mirror = runtimeReflector.reflect(this);
+        // ignore: cast_nullable_to_non_nullable
+        final ref = mirror.invokeGetter(property.property.simpleName) as Map?;
+        if (ref == null) {
+          throw ConfigurationException(configuration, "input is wrong type",
+              keyPath: '$keyPath.$name');
+        }
+        for (var i = 0; i < decodedValue.entries.length; i++) {
+          final entry = decodedValue.entries.elementAt(i);
+          if (ref is Map<String, Configuration>) {
+            final refType = ref.runtimeType.toString();
+            final innerType =
+                refType.substring(0, refType.length - 1).split(' ')[1];
+            final refMirror = runtimeReflector.annotatedClasses
+                .firstWhere((mirror) => mirror.simpleName == innerType);
+            ref[entry.key as String] =
+                refMirror.newInstance('', []) as Configuration;
+            ref[entry.key as String]!.decode(entry.value,
+                configuration: configuration,
+                keyPath: '$keyPath.$name.${entry.key}');
+          } else {
+            ref[entry.key] = entry.value;
+          }
+        }
+        return;
       }
 
       if (!runtimeReflector
           .reflect(decodedValue as Object)
           .type
           .isAssignableTo(property.property.type)) {
-        throw ConfigurationException(this, "input is wrong type",
-            keyPath: [name]);
+        throw ConfigurationException(configuration, "input is wrong type",
+            keyPath: '$keyPath.$name');
       }
 
       final mirror = runtimeReflector.reflect(this);
@@ -115,58 +125,11 @@ abstract class Configuration {
     });
 
     if (values.isNotEmpty) {
-      throw ConfigurationException(this,
-          "unexpected keys found: ${values.keys.map((s) => "'$s'").join(", ")}.");
+      throw ConfigurationException(configuration,
+          "unexpected keys found: ${values.keys.map((s) => "'$s'").join(", ")}.",
+          keyPath: keyPath);
     }
-    validate();
-  }
-
-  dynamic _tryDecode(
-    Configuration configuration,
-    String name,
-    dynamic Function() decode,
-  ) {
-    try {
-      return decode();
-    } on ConfigurationException catch (e) {
-      throw ConfigurationException(
-        configuration,
-        e.message,
-        keyPath: [name, ...e.keyPath],
-      );
-    } on IntermediateException catch (e) {
-      final underlying = e.underlying;
-      if (underlying is ConfigurationException) {
-        final keyPaths = [
-          [name],
-          e.keyPath,
-          underlying.keyPath,
-        ].expand((i) => i).toList();
-        throw ConfigurationException(
-          configuration,
-          underlying.message,
-          keyPath: keyPaths,
-        );
-      } else if (underlying is TypeError) {
-        print([name, ...e.keyPath]);
-        throw ConfigurationException(
-          configuration,
-          "input is wrong type",
-          keyPath: [name, ...e.keyPath],
-        );
-      }
-      throw ConfigurationException(
-        configuration,
-        underlying.toString(),
-        keyPath: [name, ...e.keyPath],
-      );
-    } catch (e) {
-      throw ConfigurationException(
-        configuration,
-        e.toString(),
-        keyPath: [name],
-      );
-    }
+    validate(configuration: configuration, keyPath: keyPath);
   }
 
   /// Validates this configuration.
@@ -176,7 +139,7 @@ abstract class Configuration {
   /// Override this method to perform validations on input data. Throw [ConfigurationException]
   /// for invalid data.
   @mustCallSuper
-  void validate() {
+  void validate({Type configuration = Configuration, String keyPath = ''}) {
     final configMirror = runtimeReflector.reflect(this);
     final requiredValuesThatAreMissing = properties.values
         .where((v) {
@@ -192,7 +155,8 @@ abstract class Configuration {
 
     if (requiredValuesThatAreMissing.isNotEmpty) {
       throw ConfigurationException.missingKeys(
-          this, requiredValuesThatAreMissing);
+          configuration, requiredValuesThatAreMissing,
+          keyPath: keyPath);
     }
   }
 
@@ -229,11 +193,6 @@ abstract class Configuration {
     }
     return m;
   }
-}
-
-abstract class ConfigurationRuntime {
-  void decode(Configuration configuration, Map input);
-  void validate(Configuration configuration);
 }
 
 /// Possible options for a configuration item property's optionality.
@@ -273,16 +232,16 @@ class ConfigurationException {
   ConfigurationException(
     this.configuration,
     this.message, {
-    this.keyPath = const [],
+    this.keyPath = '',
   });
 
   ConfigurationException.missingKeys(
-      this.configuration, List<String> missingKeys, {this.keyPath = const []})
+      this.configuration, List<String> missingKeys, {this.keyPath = ''})
       : message =
             "missing required key(s): ${missingKeys.map((s) => "'$s'").join(", ")}";
 
   /// The [Configuration] in which this exception occurred.
-  final Configuration configuration;
+  final Type configuration;
 
   /// The reason for the exception.
   final String message;
@@ -290,31 +249,12 @@ class ConfigurationException {
   /// The key of the object being evaluated.
   ///
   /// Either a string (adds '.name') or an int (adds '\[value\]').
-  final List<dynamic> keyPath;
+  final String keyPath;
 
   @override
   String toString() {
-    if (keyPath.isEmpty) {
-      return "Failed to read '${configuration.runtimeType}'\n\t-> $message";
-    }
-
-    final joinedKeyPath = StringBuffer();
-    for (var i = 0; i < keyPath.length; i++) {
-      final thisKey = keyPath[i];
-
-      if (thisKey is String) {
-        if (i != 0) {
-          joinedKeyPath.write(".");
-        }
-        joinedKeyPath.write(thisKey);
-      } else if (thisKey is int) {
-        joinedKeyPath.write("[$thisKey]");
-      } else {
-        throw StateError("not an int or String");
-      }
-    }
-
-    return "Failed to read key '$joinedKeyPath' for '${configuration.runtimeType}'\n\t-> $message";
+    final localKeyPath = keyPath.replaceFirst('.', '');
+    return "Failed to read key '$localKeyPath' for '$configuration'\n\t-> $message";
   }
 }
 
