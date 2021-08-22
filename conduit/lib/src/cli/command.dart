@@ -156,7 +156,7 @@ abstract class CLICommand {
         } else
           return t as T;
       }
-      return RuntimeContext.current.coerce<T>(val);
+      return globalContext.coerce<T>(val);
     } on TypeCoercionException catch (_) {
       throw CLIException(
           'The value "$val" for argument "$key" could not be coerced to a $T.');

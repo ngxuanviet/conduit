@@ -1,4 +1,5 @@
-import 'package:collection/collection.dart' show IterableExtension;
+// ignore: implementation_imports
+import 'package:collection/src/iterable_extensions.dart';
 import 'package:conduit/src/db/managed/managed.dart';
 import 'package:conduit/src/db/query/query.dart';
 import 'package:conduit/src/utilities/reference_counting_list.dart';
@@ -24,9 +25,10 @@ class ManagedDataModel extends Object
   ///
   ///       new DataModel([User, Token, Post]);
   ManagedDataModel(List<Type> instanceTypes) {
-    final runtimes = RuntimeContext.current.runtimes.iterable
+    final runtimes = globalContext.objectCache.values
         .whereType<ManagedEntityRuntime>()
         .toList();
+
     final expectedRuntimes = instanceTypes
         .map(
             (t) => runtimes.firstWhereOrNull((e) => e.entity.instanceType == t))
@@ -56,8 +58,8 @@ class ManagedDataModel extends Object
   ///
   /// This is the preferred method of instantiating this type.
   ManagedDataModel.fromCurrentMirrorSystem() {
-    final runtimes = RuntimeContext.current.runtimes.iterable
-        .whereType<ManagedEntityRuntime>();
+    final runtimes =
+        globalContext.objectCache.values.whereType<ManagedEntityRuntime>();
 
     runtimes.forEach((runtime) {
       _entities[runtime.entity.instanceType] = runtime.entity;

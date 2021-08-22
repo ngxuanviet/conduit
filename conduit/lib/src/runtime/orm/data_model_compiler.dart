@@ -3,9 +3,10 @@ import 'package:conduit/src/runtime/orm/entity_builder.dart';
 import 'package:conduit_runtime/runtime.dart';
 import 'package:reflectable/reflectable.dart';
 
-class DataModelCompiler {
-  Map<String, dynamic> compile(MirrorContext context) {
-    final m = <String, dynamic>{};
+class DataModelCompiler extends Compiler {
+  @override
+  Map<Type, dynamic> compile(MirrorContext context) {
+    final m = <Type, dynamic>{};
 
     final instanceTypes = context.types
         .where(_isTypeManagedObjectSubclass)
@@ -19,7 +20,7 @@ class DataModelCompiler {
 
     _builders!.forEach((b) {
       b.link(_builders!.map((eb) => eb.entity).toList());
-      m[b.entity.instanceType.toString()] = b.runtime;
+      m[b.entity.instanceType] = b.runtime;
     });
 
     return m;

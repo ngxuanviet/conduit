@@ -20,7 +20,7 @@ class RuntimeReflector extends Reflectable {
           declarationsCapability,
           typingCapability,
           libraryCapability,
-          subtypeQuantifyCapability,
+          // subtypeQuantifyCapability,
           superclassQuantifyCapability,
           reflectedTypeCapability,
           typeAnnotationQuantifyCapability,

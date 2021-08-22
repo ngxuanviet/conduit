@@ -1,9 +1,11 @@
 import 'dart:async';
-import 'package:universal_io/io.dart';
 
 import 'package:conduit/src/application/channel.dart';
+import 'package:conduit/src/runtime/impl.dart';
 import 'package:conduit_runtime/runtime.dart';
 import 'package:logging/logging.dart';
+import 'package:reflectable/reflectable.dart';
+import 'package:universal_io/io.dart';
 
 import '../http/controller.dart';
 import '../http/request.dart';
@@ -20,8 +22,9 @@ class ApplicationServer {
   ///
   /// You should not need to invoke this method directly.
   ApplicationServer(this.channelType, this.options, this.identifier) {
-    channel = (RuntimeContext.current[channelType] as ChannelRuntime)
-        .instantiateChannel()!
+    final runtime = ChannelRuntimeImpl(
+        runtimeReflector.reflectType(channelType) as ClassMirror);
+    channel = runtime.instantiateChannel()!
       ..server = this
       ..options = options;
   }

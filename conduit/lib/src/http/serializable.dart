@@ -1,3 +1,4 @@
+import 'package:conduit/src/runtime/impl.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:conduit_runtime/runtime.dart';
@@ -13,8 +14,10 @@ abstract class Serializable {
   /// The returned [APISchemaObject] will be of type [APIType.object]. By default, each instance variable
   /// of the receiver's type will be a property of the return value.
   APISchemaObject documentSchema(APIDocumentContext context) {
-    return (RuntimeContext.current[runtimeType] as SerializableRuntime)
-        .documentSchema(context);
+    final serializableType = globalContext.types
+        .firstWhere((element) => element.reflectedType == runtimeType);
+    final serializable = SerializableRuntimeImpl(serializableType);
+    return serializable.documentSchema(context);
   }
 
   /// Reads values from [object].

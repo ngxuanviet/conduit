@@ -1,5 +1,6 @@
 import 'package:conduit/src/db/managed/backing.dart';
 import 'package:conduit/src/db/managed/key_path.dart';
+import 'package:conduit/src/runtime/orm_impl.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:conduit_runtime/runtime.dart';
@@ -46,7 +47,7 @@ class ManagedEntity implements APIComponentDocumenter {
   /// If running in default mode (mirrors enabled), is a set of mirror operations. Otherwise,
   /// code generated.
   ManagedEntityRuntime? get runtime =>
-      RuntimeContext.current[instanceType] as ManagedEntityRuntime?;
+      globalContext.objectCache[instanceType] as ManagedEntityRuntime;
 
   /// The name of type of persistent instances represented by this entity.
   ///

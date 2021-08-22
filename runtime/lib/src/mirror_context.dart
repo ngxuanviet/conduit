@@ -1,12 +1,29 @@
+import 'compiler.dart';
 import 'mirror_coerce.dart';
 import 'package:reflectable/reflectable.dart';
 
 import 'reflector.dart';
 
-MirrorContext instance = MirrorContext._();
+MirrorContext globalContext = MirrorContext._();
 
 class MirrorContext {
-  MirrorContext._();
+  MirrorContext._() {
+    final m = <Type, dynamic>{};
+
+    for (final c in compilers) {
+      final compiledRuntimes = c.compile(this);
+      if (m.keys.any((k) => compiledRuntimes.keys.contains(k))) {
+        final matching = m.keys.where((k) => compiledRuntimes.keys.contains(k));
+        throw StateError(
+            'Could not compile. Type conflict for the following types: ${matching.join(", ")}.');
+      }
+      m.addAll(compiledRuntimes);
+    }
+
+    objectCache.addAll(m);
+  }
+
+  Map<Type, dynamic> objectCache = {};
 
   final List<ClassMirror> types = runtimeReflector.libraries.values
       .where((lib) =>
@@ -16,6 +33,16 @@ class MirrorContext {
       .expand((lib) => lib.declarations.values)
       .whereType<ClassMirror>()
       .toList();
+
+  List<Compiler> get compilers {
+    return types
+        .where((b) =>
+            b.isSubclassOf(
+                runtimeReflector.reflectType(Compiler) as ClassMirror) &&
+            !b.isAbstract)
+        .map((b) => b.newInstance('', []) as Compiler)
+        .toList();
+  }
 
   List<ClassMirror> getSubclassesOf(Type type) {
     final mirror = runtimeReflector.reflectType(type);
@@ -38,7 +65,6 @@ class MirrorContext {
     }).toList();
   }
 
-  @override
   T coerce<T>(dynamic input) {
     return runtimeCast(input, T) as T;
   }

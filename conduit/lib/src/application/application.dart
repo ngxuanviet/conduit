@@ -1,11 +1,13 @@
 import 'dart:async';
-import 'package:universal_io/io.dart';
 import 'dart:isolate';
 
 import 'package:conduit/src/application/isolate_application_server.dart';
+import 'package:conduit/src/runtime/impl.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:conduit_runtime/runtime.dart';
 import 'package:logging/logging.dart';
+import 'package:reflectable/reflectable.dart';
+import 'package:universal_io/io.dart';
 
 import '../http/http.dart';
 import 'application_server.dart';
@@ -61,7 +63,13 @@ class Application<T extends ApplicationChannel?> {
   /// This value will return to false after [stop] has completed.
   bool get isRunning => _hasFinishedLaunching;
   bool _hasFinishedLaunching = false;
-  ChannelRuntime? get _runtime => RuntimeContext.current[T] as ChannelRuntime?;
+  ChannelRuntime? get _runtime {
+    try {
+      return ChannelRuntimeImpl(runtimeReflector.reflectType(T) as ClassMirror);
+    } catch (e) {
+      return null;
+    }
+  }
 
   /// Starts this application, allowing it to handle HTTP requests.
   ///
@@ -158,7 +166,8 @@ class Application<T extends ApplicationChannel?> {
   /// This method is called by the `conduit document` CLI.
   static Future<APIDocument> document(Type type, ApplicationOptions config,
       Map<String, dynamic> projectSpec) async {
-    final runtime = RuntimeContext.current[type] as ChannelRuntime;
+    final runtime =
+        ChannelRuntimeImpl(runtimeReflector.reflectType(type) as ClassMirror);
 
     await runtime.runGlobalInitialization(config);
 

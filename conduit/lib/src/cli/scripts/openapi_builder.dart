@@ -54,7 +54,7 @@ class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
   @override
   Future<Map<String, dynamic>> execute() async {
     final channels =
-        RuntimeContext.current.runtimes.iterable.whereType<ChannelRuntime>();
+        globalContext.objectCache.values.whereType<ChannelRuntime>();
     if (channels.length != 1) {
       throw StateError(
           "Zero or more than one ApplicationChannel subclass found: ${channels.map((c) => "'${c.channelType}'").join(", ")}");

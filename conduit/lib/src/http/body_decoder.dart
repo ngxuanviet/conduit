@@ -126,7 +126,7 @@ abstract class BodyDecoder {
 
   T _cast<T>(dynamic body) {
     try {
-      return RuntimeContext.current.coerce<T>(body);
+      return globalContext.coerce<T>(body);
     } on TypeCoercionException {
       throw Response.badRequest(
           body: {"error": "request entity was unexpected type"});

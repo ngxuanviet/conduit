@@ -1,12 +1,14 @@
 import 'dart:async';
-import 'package:universal_io/io.dart';
 
 import 'package:conduit/src/application/service_registry.dart';
+import 'package:conduit/src/runtime/impl.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:conduit_runtime/runtime.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
+import 'package:reflectable/reflectable.dart';
+import 'package:universal_io/io.dart';
 
 import '../http/http.dart';
 import 'application.dart';
@@ -186,9 +188,12 @@ abstract class ApplicationChannel implements APIComponentDocumenter {
   void documentComponents(APIDocumentContext registry) {
     entryPoint.documentComponents(registry);
 
-    (RuntimeContext.current[runtimeType] as ChannelRuntime)
-        .getDocumentableChannelComponents(this)
-        .forEach((component) {
+    final runtime = globalContext.objectCache.putIfAbsent(
+        runtimeType,
+        () => ChannelRuntimeImpl(
+            runtimeReflector.reflectType(runtimeType) as ClassMirror));
+
+    runtime.getDocumentableChannelComponents(this).forEach((component) {
       component!.documentComponents(registry);
     });
   }

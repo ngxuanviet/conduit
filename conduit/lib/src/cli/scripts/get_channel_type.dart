@@ -9,16 +9,15 @@ class GetChannelExecutable extends Executable<String> {
 
   @override
   Future<String> execute() async {
-    final channels =
-        RuntimeContext.current.runtimes.iterable.whereType<ChannelRuntime>();
+    final channels = globalContext.types.where((element) =>
+        element.isSubtypeOf(runtimeReflector.reflectType(ChannelRuntime)));
     if (channels.length != 1) {
       throw StateError(
           "No ApplicationChannel subclass was found for this project. "
           "Make sure it is imported in your application library file.");
     }
-    var runtime = channels.first;
 
-    return runtimeReflector.reflectType(runtime.channelType).simpleName;
+    return channels.first.simpleName;
   }
 
   static List<String> importsForPackage(String? packageName) => [

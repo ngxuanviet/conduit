@@ -1,14 +1,16 @@
 import 'dart:async';
-import 'package:universal_io/io.dart';
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit/src/auth/auth.dart';
+import 'package:conduit/src/http/http_response.dart';
 import 'package:conduit/src/http/resource_controller_interfaces.dart';
+import 'package:conduit/src/runtime/resource_controller_impl.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:conduit_runtime/runtime.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
+import 'package:reflectable/reflectable.dart';
 
 import 'http.dart';
 
@@ -69,9 +71,11 @@ import 'http.dart';
 abstract class ResourceController extends Controller
     implements Recyclable<Null> {
   ResourceController() {
-    _runtime =
-        (RuntimeContext.current.runtimes[runtimeType] as ControllerRuntime?)
-            ?.resourceController;
+    final controller = globalContext.objectCache.putIfAbsent(
+        runtimeType,
+        () => ResourceControllerRuntimeImpl(
+            runtimeReflector.reflectType(runtimeType) as ClassMirror));
+    _runtime = controller.resourceController as ResourceControllerRuntime;
   }
 
   @override
@@ -245,7 +249,7 @@ abstract class ResourceController extends Controller
   Future<Response> _process() async {
     if (!request!.body.isEmpty) {
       if (!_requestContentTypeIsSupported(request)) {
-        return Response(HttpStatus.unsupportedContentType, null, null);
+        return Response(HttpStatus.unsupportedMediaType, null, null);
       }
     }
 
