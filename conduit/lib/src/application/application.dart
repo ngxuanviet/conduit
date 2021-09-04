@@ -67,6 +67,7 @@ class Application<T extends ApplicationChannel?> {
     try {
       return ChannelRuntimeImpl(runtimeReflector.reflectType(T) as ClassMirror);
     } catch (e) {
+      print(e);
       return null;
     }
   }

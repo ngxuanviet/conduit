@@ -222,6 +222,7 @@ abstract class ApplicationChannel implements APIComponentDocumenter {
 ///             websocketsOnThisIsolate.forEach((s) => s.add(event["data"]);
 ///           }
 ///         });
+@runtimeReflector
 class ApplicationMessageHub extends Stream<dynamic> implements Sink<dynamic> {
   final Logger _logger = Logger("conduit");
   final StreamController<dynamic> _outboundController =

@@ -2,10 +2,12 @@ import 'package:conduit_codable/conduit_codable.dart';
 import 'package:conduit_open_api/src/object.dart';
 import 'package:conduit_open_api/src/v3/operation.dart';
 import 'package:conduit_open_api/src/v3/parameter.dart';
+import 'package:conduit_runtime/runtime.dart';
 
 /// Describes the operations available on a single path.
 ///
 /// An [APIPath] MAY be empty, due to ACL constraints. The path itself is still exposed to the documentation viewer but they will not know which operations and parameters are available.
+@runtimeReflector
 class APIPath extends APIObject {
   APIPath(
       {this.summary,

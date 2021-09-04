@@ -1,12 +1,14 @@
-import 'package:universal_io/io.dart';
-
 import 'package:conduit/conduit.dart';
 import 'package:conduit/src/dev/helpers.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:test/test.dart';
+import 'package:universal_io/io.dart';
+
+import 'auth_documentation_test.reflectable.dart';
 
 void main() {
+  initializeReflectable();
   group("AuthController", () {
     Map<String, APIOperation>? operations;
     setUpAll(() async {

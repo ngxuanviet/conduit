@@ -1,13 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:universal_io/io.dart';
 
 import 'package:conduit/conduit.dart';
 import 'package:conduit/src/dev/helpers.dart';
+import 'package:conduit_runtime/runtime.dart';
 import 'package:conduit_test/conduit_test.dart';
 import 'package:test/test.dart';
+import 'package:universal_io/io.dart';
+
+import 'auth_redirect_controller_test.reflectable.dart';
 
 void main() {
+  initializeReflectable();
   late Application<TestChannel> application;
   Agent client = Agent.onPort(8888);
 
@@ -809,6 +813,7 @@ void main() {
   });
 }
 
+@runtimeReflector
 class TestChannel extends ApplicationChannel
     implements AuthRedirectControllerDelegate {
   AuthServer? authServer;

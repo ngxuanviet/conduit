@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:conduit_runtime/runtime.dart';
 import 'package:universal_io/io.dart';
 
 import 'body_decoder.dart';
@@ -10,6 +11,7 @@ import 'http.dart';
 /// [decode] to convert the contents of this object into a Dart type (e.g, [Map] or [List]).
 ///
 /// See also [CodecRegistry] for how decoding occurs.
+@runtimeReflector
 class RequestBody extends BodyDecoder {
   /// Creates a new instance of this type.
   ///

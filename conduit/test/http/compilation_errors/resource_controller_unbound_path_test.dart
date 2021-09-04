@@ -2,7 +2,6 @@ import 'dart:async';
 import "dart:core";
 
 import 'package:conduit/conduit.dart';
-import 'package:conduit_runtime/runtime.dart';
 import "package:test/test.dart";
 
 void main() {

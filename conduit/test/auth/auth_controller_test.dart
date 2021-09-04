@@ -1,14 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:universal_io/io.dart';
 
 import 'package:conduit/conduit.dart';
 import 'package:conduit/src/dev/helpers.dart';
 import 'package:conduit_test/conduit_test.dart';
 import 'package:test/test.dart';
+import 'package:universal_io/io.dart';
+
+import 'auth_controller_test.reflectable.dart';
 
 int port = 8887;
 void main() {
+  initializeReflectable();
   HttpServer? server;
   AuthServer? authenticationServer;
   Router? router;

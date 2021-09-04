@@ -11,6 +11,7 @@ import 'package:conduit_runtime/runtime.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:reflectable/reflectable.dart';
+import 'package:universal_io/io.dart';
 
 import 'http.dart';
 

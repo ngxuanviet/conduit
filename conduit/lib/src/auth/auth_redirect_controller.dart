@@ -5,6 +5,7 @@ import 'package:conduit/src/http/resource_controller_bindings.dart';
 import 'package:conduit/src/http/response.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
+import 'package:conduit_runtime/runtime.dart';
 import 'package:universal_io/io.dart';
 
 import 'auth.dart';
@@ -45,6 +46,7 @@ abstract class AuthRedirectControllerDelegate {
 ///         .route("/auth/code")
 ///         .link(() => new AuthRedirectController(authServer));
 ///
+@runtimeReflector
 class AuthRedirectController extends ResourceController {
   /// Creates a new instance of an [AuthRedirectController].
   ///

@@ -1,0 +1,14 @@
+targets:
+  $default:
+    builders:
+      reflectable:
+        generate_for:
+          - test/auth/**.dart
+          # - test/cli/**_test.dart
+          # - test/command/**_test.dart
+          # - test/db/**_test.dart
+          # - test/http/**_test.dart
+          # - test/managed_auth/**_test.dart
+          # - test/openapi/**_test.dart
+        options:
+          formatted: true
