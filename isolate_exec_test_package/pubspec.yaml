@@ -1,5 +1,0 @@
-name: test_package
-version: 3.0.11
-description: test dependency
-environment: 
-  sdk: '>=2.12.0-0 <3.0.0'
